@@ -1,7 +1,6 @@
-
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { MapPin, Truck, Shield, Star } from "lucide-react";
+import { MapPin, Truck, Shield } from "lucide-react";
 import Map from "@/components/Map";
 import ProductCard from "@/components/ProductCard";
 import SizeVisualizer from "@/components/SizeVisualizer";
@@ -14,7 +13,7 @@ const Index = () => {
   return (
     <div className="min-h-screen w-full overflow-x-hidden">
       {/* Hero Section */}
-      <section className="relative min-h-screen hero-gradient px-4 py-20 md:py-32">
+      <section className="relative min-h-[80vh] hero-gradient px-4 py-12 md:py-20">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -40,9 +39,9 @@ const Index = () => {
       </section>
 
       {/* Features Section */}
-      <section className="py-20 px-4">
+      <section className="py-12 px-4">
         <div className="container mx-auto">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {[
               {
                 icon: Shield,
@@ -77,7 +76,7 @@ const Index = () => {
       </section>
 
       {/* Product Section */}
-      <section className="py-20 px-4 bg-secondary/20">
+      <section className="py-12 px-4 bg-secondary/10">
         <div className="container mx-auto">
           <h2 className="text-3xl md:text-4xl font-bold text-center mb-12">
             Choose Your Size
@@ -119,9 +118,9 @@ const Index = () => {
       <SizeVisualizer selectedSize={selectedSize} />
 
       {/* Map Section */}
-      <section className="py-20 px-4">
+      <section className="py-12 px-4">
         <div className="container mx-auto">
-          <h2 className="text-3xl md:text-4xl font-bold text-center mb-12">
+          <h2 className="text-3xl md:text-4xl font-bold text-center mb-8">
             We Deliver Here
           </h2>
           <div className="h-[500px] rounded-2xl overflow-hidden">
@@ -134,9 +133,9 @@ const Index = () => {
       <TestimonialSection />
 
       {/* Order Form */}
-      <section className="py-20 px-4 bg-secondary/20">
+      <section className="py-12 px-4 bg-secondary/10">
         <div className="container mx-auto max-w-2xl">
-          <h2 className="text-3xl md:text-4xl font-bold text-center mb-12">
+          <h2 className="text-3xl md:text-4xl font-bold text-center mb-8">
             Place Your Order
           </h2>
           <OrderForm />

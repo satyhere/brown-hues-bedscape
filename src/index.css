@@ -43,6 +43,8 @@
   }
   body {
     @apply bg-background text-foreground antialiased;
+    background: linear-gradient(135deg, #fdfcfb 0%, #e2d1c3 100%);
+    min-height: 100vh;
   }
   .glass {
     @apply backdrop-blur-md bg-white/20 border border-white/30 shadow-lg;
@@ -51,6 +53,6 @@
     @apply glass hover:bg-white/30 transition-all duration-300 active:scale-95;
   }
   .hero-gradient {
-    @apply bg-gradient-to-b from-secondary/50 to-background;
+    @apply bg-gradient-to-b from-secondary/50 to-background/0;
   }
 }
