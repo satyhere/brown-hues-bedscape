@@ -5,6 +5,7 @@ import { MapPin, Truck, Shield } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import ProductCard from "@/components/ProductCard";
+import TestimonialSection from "@/components/TestimonialSection";
 
 const Index = () => {
   const [selectedSize, setSelectedSize] = useState("");
