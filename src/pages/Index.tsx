@@ -1,6 +1,8 @@
-import { useState } from "react";
+
+import { useState, useRef } from "react";
 import { motion } from "framer-motion";
 import { MapPin, Truck, Shield } from "lucide-react";
+import { toast } from "sonner";
 import Map from "@/components/Map";
 import ProductCard from "@/components/ProductCard";
 import SizeVisualizer from "@/components/SizeVisualizer";
@@ -9,6 +11,13 @@ import OrderForm from "@/components/OrderForm";
 
 const Index = () => {
   const [selectedSize, setSelectedSize] = useState("queen");
+  const orderFormRef = useRef<HTMLDivElement>(null);
+
+  const handleSizeSelect = (size: string) => {
+    setSelectedSize(size);
+    toast.success(`${size} size selected`);
+    orderFormRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
 
   return (
     <div className="min-h-screen w-full overflow-x-hidden">
@@ -107,7 +116,8 @@ const Index = () => {
               <ProductCard
                 key={index}
                 {...product}
-                onSelect={() => setSelectedSize(product.title.toLowerCase())}
+                selected={selectedSize === product.title.toLowerCase()}
+                onSelect={() => handleSizeSelect(product.title.toLowerCase())}
               />
             ))}
           </div>
@@ -133,12 +143,12 @@ const Index = () => {
       <TestimonialSection />
 
       {/* Order Form */}
-      <section className="py-12 px-4 bg-secondary/10">
+      <section ref={orderFormRef} className="py-12 px-4 bg-secondary/10 scroll-mt-8">
         <div className="container mx-auto max-w-2xl">
           <h2 className="text-3xl md:text-4xl font-bold text-center mb-8">
             Place Your Order
           </h2>
-          <OrderForm />
+          <OrderForm initialSize={selectedSize} />
         </div>
       </section>
     </div>

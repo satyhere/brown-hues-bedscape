@@ -1,26 +1,44 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
+import { toast } from "sonner";
 import { Input } from "./ui/input";
 import { Label } from "./ui/label";
 import { Textarea } from "./ui/textarea";
 import { Button } from "./ui/button";
 
-const OrderForm = () => {
+interface OrderFormProps {
+  initialSize?: string;
+}
+
+const OrderForm = ({ initialSize = "" }: OrderFormProps) => {
   const [formData, setFormData] = useState({
     name: "",
     phone: "",
     email: "",
     address: "",
-    size: "",
-    quantity: "",
+    size: initialSize,
+    quantity: "1",
     notes: "",
   });
 
+  useEffect(() => {
+    setFormData(prev => ({ ...prev, size: initialSize }));
+  }, [initialSize]);
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // Handle form submission
     console.log(formData);
+    toast.success("Order placed successfully! We'll contact you soon.");
+    setFormData({
+      name: "",
+      phone: "",
+      email: "",
+      address: "",
+      size: initialSize,
+      quantity: "1",
+      notes: "",
+    });
   };
 
   return (
@@ -91,6 +109,7 @@ const OrderForm = () => {
           <Input
             id="quantity"
             type="number"
+            min="1"
             value={formData.quantity}
             onChange={(e) => setFormData({ ...formData, quantity: e.target.value })}
             className="glass"
