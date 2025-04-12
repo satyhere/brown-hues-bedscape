@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { MapPin, Truck, Shield, CheckCircle2 } from "lucide-react";
@@ -7,6 +6,7 @@ import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import ProductCard from "@/components/ProductCard";
 import TestimonialSection from "@/components/TestimonialSection";
+import Header from "@/components/Header";
 
 type Step = 'size' | 'dimension' | 'treatment';
 type Size = 'single' | 'double' | 'queen' | 'king';
@@ -58,26 +58,28 @@ const Index = () => {
 
   return (
     <div className="min-h-screen w-full overflow-x-hidden">
-      {/* Hero Section */}
-      <section className="relative min-h-[70vh] hero-gradient px-4 py-12 md:py-20">
+      <Header />
+      
+      {/* Hero Section - Reduced top padding to account for header */}
+      <section className="relative min-h-[65vh] hero-gradient px-4 py-8 md:py-16 pt-20 md:pt-24">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
           className="container mx-auto text-center"
         >
-          <span className="glass px-4 py-1 rounded-full text-sm font-medium mb-4 inline-block">
+          <span className="glass px-4 py-1 rounded-full text-sm font-medium mb-3 inline-block">
             Premium Bed Pallets in Bangalore
           </span>
-          <h1 className="text-4xl md:text-6xl font-bold mb-6">
+          <h1 className="text-4xl md:text-6xl font-bold mb-4">
             Customize Your Perfect Bed
           </h1>
-          <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto mb-8">
+          <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto mb-6">
             High-quality, fully customizable pinewood pallets delivered to your doorstep
           </p>
 
           {/* Steps Indicator */}
-          <div className="flex justify-center items-center gap-4 mb-8">
+          <div className="flex justify-center items-center gap-4 mb-6">
             {['size', 'dimension', 'treatment'].map((step, index) => (
               <motion.div
                 key={step}
@@ -101,14 +103,14 @@ const Index = () => {
         </motion.div>
       </section>
 
-      {/* Configurator Section */}
-      <section className="py-12 px-4">
+      {/* Configurator Section - Reduced padding */}
+      <section className="py-6 px-4" id="products">
         <div className="container mx-auto max-w-4xl">
           {currentStep === 'size' && (
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              className="space-y-8"
+              className="space-y-6"
             >
               <h2 className="text-3xl font-bold text-center">Select Size</h2>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -134,7 +136,7 @@ const Index = () => {
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              className="space-y-8"
+              className="space-y-6"
             >
               <h2 className="text-3xl font-bold text-center">Select Dimension</h2>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -160,7 +162,7 @@ const Index = () => {
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              className="space-y-8"
+              className="space-y-6"
             >
               <h2 className="text-3xl font-bold text-center">Select Treatment</h2>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -187,7 +189,7 @@ const Index = () => {
             </motion.div>
           )}
 
-          <div className="mt-8 flex justify-center">
+          <div className="mt-6 flex justify-center">
             {currentStep !== 'size' && (
               <Button
                 variant="outline"
@@ -211,8 +213,8 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Features Section */}
-      <section className="py-8 px-4">
+      {/* Features Section - Reduced padding */}
+      <section className="py-6 px-4">
         <div className="container mx-auto">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             {[
@@ -248,10 +250,10 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Product Section */}
-      <section className="py-8 px-4">
+      {/* Product Section - Reduced padding */}
+      <section className="py-6 px-4">
         <div className="container mx-auto">
-          <h2 className="text-3xl md:text-4xl font-bold text-center mb-8">
+          <h2 className="text-3xl md:text-4xl font-bold text-center mb-6">
             Choose Your Size
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 max-w-4xl mx-auto">
@@ -288,8 +290,46 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Testimonials */}
-      <TestimonialSection />
+      {/* Testimonials - with id for navigation */}
+      <section id="testimonials">
+        <TestimonialSection />
+      </section>
+
+      {/* Contact Section */}
+      <section className="py-8 px-4 glass mt-6" id="contact">
+        <div className="container mx-auto max-w-4xl">
+          <h2 className="text-3xl font-bold text-center mb-6">Contact Us</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div>
+              <h3 className="text-xl font-semibold mb-4">BrandHues</h3>
+              <p className="mb-4">High-quality, fully customizable pinewood pallets delivered to your doorstep in Bangalore.</p>
+              <p className="mb-2"><strong>Email:</strong> info@brandhues.com</p>
+              <p className="mb-2"><strong>Phone:</strong> +91 9876543210</p>
+              <p><strong>Address:</strong> Koramangala, Bangalore - 560034</p>
+            </div>
+            <div className="glass p-6 rounded-xl">
+              <h3 className="text-xl font-semibold mb-4">Send Us a Message</h3>
+              <form className="space-y-4">
+                <div>
+                  <input type="text" placeholder="Your Name" className="w-full p-3 glass rounded-md" />
+                </div>
+                <div>
+                  <input type="email" placeholder="Your Email" className="w-full p-3 glass rounded-md" />
+                </div>
+                <div>
+                  <textarea placeholder="Your Message" className="w-full p-3 glass rounded-md" rows={4}></textarea>
+                </div>
+                <Button className="w-full">Send Message</Button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Footer */}
+      <footer className="py-6 px-4 text-center">
+        <p>© 2025 BrandHues. All rights reserved.</p>
+      </footer>
     </div>
   );
 };

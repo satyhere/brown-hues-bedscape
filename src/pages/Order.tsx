@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import OrderForm from "@/components/OrderForm";
 import { ChevronLeft } from "lucide-react";
+import Header from "@/components/Header";
 
 const Order = () => {
   const location = useLocation();
@@ -15,7 +16,9 @@ const Order = () => {
 
   return (
     <div className="min-h-screen w-full py-8 px-4">
-      <div className="container mx-auto max-w-2xl">
+      <Header />
+      
+      <div className="container mx-auto max-w-2xl pt-20">
         <Button 
           variant="ghost" 
           className="mb-6"
