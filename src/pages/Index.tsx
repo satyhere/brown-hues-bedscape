@@ -50,6 +50,12 @@ const Index = () => {
     return dimensions[size] || [];
   };
 
+  // Add the handleSizeSelect function
+  const handleSizeSelect = (size: string) => {
+    setSelectedSize(size as Size);
+    setCurrentStep('size');
+  };
+
   return (
     <div className="min-h-screen w-full overflow-x-hidden">
       {/* Hero Section */}
@@ -274,8 +280,8 @@ const Index = () => {
               <ProductCard
                 key={index}
                 {...product}
-                selected={selectedSize === product.title.toLowerCase()}
-                onSelect={() => handleSizeSelect(product.title.toLowerCase())}
+                selected={selectedSize === product.title.toLowerCase().split(' ')[0]}
+                onSelect={() => handleSizeSelect(product.title.toLowerCase().split(' ')[0])}
               />
             ))}
           </div>

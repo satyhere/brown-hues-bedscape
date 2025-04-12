@@ -9,22 +9,35 @@ import { Button } from "./ui/button";
 
 interface OrderFormProps {
   initialSize?: string;
+  initialDimension?: string;
+  initialTreatment?: string;
 }
 
-const OrderForm = ({ initialSize = "" }: OrderFormProps) => {
+const OrderForm = ({ 
+  initialSize = "", 
+  initialDimension = "", 
+  initialTreatment = "" 
+}: OrderFormProps) => {
   const [formData, setFormData] = useState({
     name: "",
     phone: "",
     email: "",
     address: "",
     size: initialSize,
+    dimension: initialDimension,
+    treatment: initialTreatment,
     quantity: "1",
     notes: "",
   });
 
   useEffect(() => {
-    setFormData(prev => ({ ...prev, size: initialSize }));
-  }, [initialSize]);
+    setFormData(prev => ({ 
+      ...prev, 
+      size: initialSize,
+      dimension: initialDimension,
+      treatment: initialTreatment
+    }));
+  }, [initialSize, initialDimension, initialTreatment]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -36,6 +49,8 @@ const OrderForm = ({ initialSize = "" }: OrderFormProps) => {
       email: "",
       address: "",
       size: initialSize,
+      dimension: initialDimension,
+      treatment: initialTreatment,
       quantity: "1",
       notes: "",
     });
@@ -93,29 +108,47 @@ const OrderForm = ({ initialSize = "" }: OrderFormProps) => {
         />
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <div className="space-y-2">
           <Label htmlFor="size">Bed Size</Label>
           <Input
             id="size"
             value={formData.size}
-            onChange={(e) => setFormData({ ...formData, size: e.target.value })}
-            className="glass"
-            required
+            readOnly
+            className="glass bg-muted"
           />
         </div>
         <div className="space-y-2">
-          <Label htmlFor="quantity">Quantity</Label>
+          <Label htmlFor="dimension">Dimension</Label>
           <Input
-            id="quantity"
-            type="number"
-            min="1"
-            value={formData.quantity}
-            onChange={(e) => setFormData({ ...formData, quantity: e.target.value })}
-            className="glass"
-            required
+            id="dimension"
+            value={formData.dimension}
+            readOnly
+            className="glass bg-muted"
           />
         </div>
+        <div className="space-y-2">
+          <Label htmlFor="treatment">Treatment</Label>
+          <Input
+            id="treatment"
+            value={formData.treatment}
+            readOnly
+            className="glass bg-muted"
+          />
+        </div>
+      </div>
+
+      <div className="space-y-2">
+        <Label htmlFor="quantity">Quantity</Label>
+        <Input
+          id="quantity"
+          type="number"
+          min="1"
+          value={formData.quantity}
+          onChange={(e) => setFormData({ ...formData, quantity: e.target.value })}
+          className="glass"
+          required
+        />
       </div>
 
       <div className="space-y-2">

@@ -8,7 +8,10 @@ import { ChevronLeft } from "lucide-react";
 const Order = () => {
   const location = useLocation();
   const navigate = useNavigate();
+  
   const selectedSize = location.state?.selectedSize || "";
+  const selectedDimension = location.state?.selectedDimension || "";
+  const selectedTreatment = location.state?.selectedTreatment || "";
 
   return (
     <div className="min-h-screen w-full py-8 px-4">
@@ -19,7 +22,7 @@ const Order = () => {
           onClick={() => navigate(-1)}
         >
           <ChevronLeft className="mr-2 h-4 w-4" />
-          Back to Sizes
+          Back to Configurator
         </Button>
 
         <motion.div
@@ -28,12 +31,26 @@ const Order = () => {
           className="text-center mb-8"
         >
           <h1 className="text-3xl font-bold mb-2">Complete Your Order</h1>
-          <p className="text-muted-foreground">
-            You selected: {selectedSize.charAt(0).toUpperCase() + selectedSize.slice(1)} Size
+          <p className="text-muted-foreground mb-1">
+            Size: {selectedSize.charAt(0).toUpperCase() + selectedSize.slice(1)}
           </p>
+          {selectedDimension && (
+            <p className="text-muted-foreground mb-1">
+              Dimension: {selectedDimension} inches
+            </p>
+          )}
+          {selectedTreatment && (
+            <p className="text-muted-foreground">
+              Treatment: {selectedTreatment.charAt(0).toUpperCase() + selectedTreatment.slice(1)}
+            </p>
+          )}
         </motion.div>
 
-        <OrderForm initialSize={selectedSize} />
+        <OrderForm 
+          initialSize={selectedSize} 
+          initialDimension={selectedDimension} 
+          initialTreatment={selectedTreatment}
+        />
       </div>
     </div>
   );
