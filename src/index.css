@@ -2,41 +2,51 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@1,700&display=swap');
  
 @layer base {
   :root {
     --background: 33 25% 98%;
     --foreground: 28 30% 25%;
-    
     --card: 0 0% 100%;
     --card-foreground: 28 30% 25%;
- 
     --popover: 0 0% 100%;
     --popover-foreground: 28 30% 25%;
- 
     --primary: 28 30% 25%;
     --primary-foreground: 0 0% 98%;
- 
     --secondary: 33 25% 85%;
     --secondary-foreground: 28 30% 25%;
- 
     --muted: 33 25% 95%;
     --muted-foreground: 28 30% 40%;
- 
     --accent: 20 30% 60%;
     --accent-foreground: 0 0% 98%;
- 
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 0 0% 98%;
-
     --border: 28 30% 85%;
     --input: 28 30% 85%;
     --ring: 28 30% 25%;
- 
     --radius: 0.75rem;
   }
 }
- 
+
+/* Custom Font for Brand */
+.font-bhues {
+  font-family: 'Playfair Display', serif;
+  font-style: italic;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+}
+
+/* Better animation feel on hover for all glass/card elements */
+.card-animate, .glass, .glass-button {
+  transition: box-shadow 0.22s cubic-bezier(0.4,0,0.2,1), transform 0.18s cubic-bezier(0.4,0,0.2,1);
+}
+.card-animate:hover, .glass:hover, .glass-button:hover {
+  box-shadow: 0 6px 24px rgba(180,150,125,0.10), 0 2px 8px rgba(100,60,0,0.03);
+  transform: translateY(-3px) scale(1.035);
+}
+
 @layer base {
   * {
     @apply border-border;
@@ -59,4 +69,3 @@
     @apply relative inline-block after:content-[''] after:absolute after:w-full after:scale-x-0 after:h-0.5 after:bottom-0 after:left-0 after:bg-primary after:origin-bottom-right after:transition-transform after:duration-300 hover:after:scale-x-100 hover:after:origin-bottom-left;
   }
 }
-
