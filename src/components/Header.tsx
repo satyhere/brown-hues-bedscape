@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { Menu, X, ShoppingBag } from "lucide-react";
@@ -49,10 +48,10 @@ const Header = () => {
         >
           <span 
             onClick={navigateHome}
-            className="text-3xl italic font-semibold cursor-pointer select-none font-bhues tracking-wide"
-            style={{ fontStyle: "italic", fontWeight: 600, letterSpacing: "0.06em", fontFamily: '"Playfair Display", serif' }}
+            className="text-5xl font-bold cursor-pointer select-none tracking-tight text-primary"
+            style={{ fontFamily: 'inherit' }}
           >
-            brownhues.co
+            brownhues<span className="text-accent">.co</span>
           </span>
         </motion.div>
         {!isMobile && (
