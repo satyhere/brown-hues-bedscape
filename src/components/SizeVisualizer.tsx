@@ -30,7 +30,7 @@ const SizeVisualizer = ({ selectedSize }: SizeVisualizerProps) => {
           {selectedSize === "double" ? (
             <div className="relative w-full h-[300px] mt-4">
               <img
-                src="/lovable-uploads/a6395e88-15da-461e-a21b-13e6bccbaade.png"
+                src="/lovable-uploads/4cf8207a-4832-4929-8a39-4e78ee9bb833.png"
                 alt="Double Bed Pallet"
                 className="w-full h-full object-contain"
               />
