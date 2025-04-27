@@ -38,79 +38,13 @@
   letter-spacing: 0.06em;
 }
 
-/* Custom Cursor */
-.cursor-dot,
-.cursor-dot-outline {
-  pointer-events: none;
-  position: fixed;
-  top: 0;
-  left: 0;
-  z-index: 9999;
-  border-radius: 50%;
-  opacity: 0;
-  transform: translate(-50%, -50%);
-  transition: opacity 0.15s ease-in-out, transform 0.25s ease-in-out;
-}
-
-.cursor-dot {
-  width: 8px;
-  height: 8px;
-  background-color: hsla(var(--primary));
-}
-
-.cursor-dot-outline {
-  width: 40px;
-  height: 40px;
-  background-color: rgba(219, 198, 178, 0.3);
-  transition: transform 0.3s ease;
-}
-
-/* Enhanced Glassmorphism */
-.glass {
-  @apply backdrop-blur-md bg-white/20 border border-white/30 shadow-lg;
-  background: linear-gradient(135deg, rgba(255,255,255,0.22), rgba(255,255,255,0.05));
-  box-shadow: 
-    0 8px 32px 0 rgba(180, 150, 125, 0.10),
-    0 2px 8px 0 rgba(100, 60, 0, 0.05);
-}
-
 /* Better animation feel on hover for all glass/card elements */
 .card-animate, .glass, .glass-button {
-  transition: 
-    box-shadow 0.22s cubic-bezier(0.4,0,0.2,1), 
-    transform 0.18s cubic-bezier(0.4,0,0.2,1),
-    background-color 0.3s ease;
+  transition: box-shadow 0.22s cubic-bezier(0.4,0,0.2,1), transform 0.18s cubic-bezier(0.4,0,0.2,1);
 }
-
 .card-animate:hover, .glass:hover, .glass-button:hover {
-  box-shadow: 
-    0 10px 30px rgba(180,150,125,0.15), 
-    0 2px 8px rgba(100,60,0,0.08);
+  box-shadow: 0 6px 24px rgba(180,150,125,0.10), 0 2px 8px rgba(100,60,0,0.03);
   transform: translateY(-3px) scale(1.035);
-  background-color: rgba(255, 255, 255, 0.25);
-}
-
-/* Enhanced Button Animation */
-.glass-button {
-  position: relative;
-  overflow: hidden;
-}
-
-.glass-button::after {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(135deg, rgba(255,255,255,0.2), transparent);
-  transform: translateY(-100%);
-  transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
-  pointer-events: none;
-}
-
-.glass-button:hover::after {
-  transform: translateY(0);
 }
 
 @layer base {
@@ -121,7 +55,6 @@
     @apply bg-background text-foreground antialiased;
     background: linear-gradient(135deg, #fdfcfb 0%, #e2d1c3 100%);
     min-height: 100vh;
-    cursor: none;
   }
   .glass {
     @apply backdrop-blur-md bg-white/20 border border-white/30 shadow-lg;
@@ -135,48 +68,4 @@
   .story-link {
     @apply relative inline-block after:content-[''] after:absolute after:w-full after:scale-x-0 after:h-0.5 after:bottom-0 after:left-0 after:bg-primary after:origin-bottom-right after:transition-transform after:duration-300 hover:after:scale-x-100 hover:after:origin-bottom-left;
   }
-
-  /* Enhanced keyframe animations */
-  @keyframes float {
-    0% {
-      transform: translateY(0px);
-    }
-    50% {
-      transform: translateY(-10px);
-    }
-    100% {
-      transform: translateY(0px);
-    }
-  }
-
-  @keyframes pulse {
-    0%, 100% {
-      opacity: 1;
-      transform: scale(1);
-    }
-    50% {
-      opacity: 0.9;
-      transform: scale(1.05);
-    }
-  }
-
-  /* Parallax effect classes */
-  .parallax-slow {
-    transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
-  }
-  .parallax-medium {
-    transition: transform 0.25s cubic-bezier(0.2, 0.8, 0.2, 1);
-  }
-  .parallax-fast {
-    transition: transform 0.1s cubic-bezier(0.2, 0.8, 0.2, 1);
-  }
-}
-
-/* Special animations for important elements */
-.animate-float {
-  animation: float 6s ease-in-out infinite;
-}
-
-.animate-pulse-subtle {
-  animation: pulse 4s ease-in-out infinite;
 }
