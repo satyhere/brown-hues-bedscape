@@ -1,4 +1,3 @@
-
 import { motion, useScroll, useTransform } from "framer-motion";
 import { useRef, useState } from "react";
 import { Button } from "./ui/button";
@@ -23,7 +22,6 @@ const SizeVisualizer = ({ selectedSize }: SizeVisualizerProps) => {
     offset: ["start end", "end start"],
   });
 
-  const rotate = useTransform(scrollYProgress, [0, 1], [0, 360]);
   const scale = useTransform(scrollYProgress, [0, 0.5, 1], [0.8, 1, 0.8]);
   
   const [customPallets, setCustomPallets] = useState<CustomPalletSize[]>([
@@ -50,7 +48,7 @@ const SizeVisualizer = ({ selectedSize }: SizeVisualizerProps) => {
     <section ref={ref} className="py-20 px-4 min-h-screen flex items-center justify-center">
       <div className="container mx-auto text-center">
         <motion.div
-          style={{ rotate, scale }}
+          style={{ scale }}
           className="w-full max-w-2xl mx-auto aspect-video glass rounded-2xl p-8 relative overflow-hidden"
         >
           <h3 className="text-2xl font-semibold mb-6">
