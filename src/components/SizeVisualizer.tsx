@@ -21,12 +21,28 @@ const SizeVisualizer = ({ selectedSize }: SizeVisualizerProps) => {
       <div className="container mx-auto text-center">
         <motion.div
           style={{ rotate, scale }}
-          className="w-full max-w-2xl mx-auto aspect-video glass rounded-2xl p-8"
+          className="w-full max-w-2xl mx-auto aspect-video glass rounded-2xl p-8 relative overflow-hidden"
         >
-          <h3 className="text-2xl font-semibold mb-4">
+          <h3 className="text-2xl font-semibold mb-6">
             Visualize Your {selectedSize} Bed
           </h3>
-          {/* Add 3D bed visualization here */}
+          
+          {selectedSize === "double" ? (
+            <div className="relative w-full h-[300px] mt-4">
+              <img
+                src="/lovable-uploads/a6395e88-15da-461e-a21b-13e6bccbaade.png"
+                alt="Double Bed Pallet"
+                className="w-full h-full object-contain"
+              />
+              <div className="absolute bottom-4 left-4 glass px-3 py-1 rounded-full text-sm">
+                72" × 48"
+              </div>
+            </div>
+          ) : (
+            <div className="text-muted-foreground">
+              Select "Double Bed" to view the product image
+            </div>
+          )}
         </motion.div>
       </div>
     </section>
