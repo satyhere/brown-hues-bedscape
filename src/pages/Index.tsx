@@ -87,7 +87,7 @@ const Index = () => {
           <span className="glass px-3 py-1 rounded-full text-sm font-medium mb-3 inline-block tracking-wide shadow-sm">
             Premium Bed Pallets in Bangalore
           </span>
-          <h1 className="font-bhues text-[2.6rem] sm:text-5xl font-bold mb-2">Design Your Bed</h1>
+          <h1 className="font-roboto text-[2.6rem] sm:text-5xl mb-2 text-center font-extralight text-card-foreground">Design Your Bed</h1>
           <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto mb-3">
             Custom, high-quality Pinewood Pallets delivered right to your doorstep.
           </p>
