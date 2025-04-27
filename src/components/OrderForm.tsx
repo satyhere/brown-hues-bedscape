@@ -6,17 +6,23 @@ import { Input } from "./ui/input";
 import { Label } from "./ui/label";
 import { Textarea } from "./ui/textarea";
 import { Button } from "./ui/button";
+import Map from "./Map";
+import { MapPin } from "lucide-react";
 
 interface OrderFormProps {
   initialSize?: string;
   initialDimension?: string;
   initialTreatment?: string;
+  cartItems?: any[];
+  onOrderComplete?: () => void;
 }
 
 const OrderForm = ({ 
   initialSize = "", 
   initialDimension = "", 
-  initialTreatment = "" 
+  initialTreatment = "",
+  cartItems = [],
+  onOrderComplete
 }: OrderFormProps) => {
   const [formData, setFormData] = useState({
     name: "",
@@ -30,6 +36,8 @@ const OrderForm = ({
     notes: "",
   });
 
+  const [useMap, setUseMap] = useState(false);
+
   useEffect(() => {
     setFormData(prev => ({ 
       ...prev, 
@@ -39,10 +47,19 @@ const OrderForm = ({
     }));
   }, [initialSize, initialDimension, initialTreatment]);
 
+  const handleAddressSelected = (address: string) => {
+    setFormData(prev => ({
+      ...prev,
+      address
+    }));
+  };
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     console.log(formData);
-    toast.success("Order placed successfully! We'll contact you soon.");
+    toast.success("Order placed successfully! We'll contact you soon for delivery.");
+    
+    // Reset the form
     setFormData({
       name: "",
       phone: "",
@@ -54,6 +71,11 @@ const OrderForm = ({
       quantity: "1",
       notes: "",
     });
+    
+    // Call the callback if provided
+    if (onOrderComplete) {
+      onOrderComplete();
+    }
   };
 
   return (
@@ -98,58 +120,101 @@ const OrderForm = ({
       </div>
 
       <div className="space-y-2">
-        <Label htmlFor="address">Delivery Address</Label>
-        <Textarea
-          id="address"
-          value={formData.address}
-          onChange={(e) => setFormData({ ...formData, address: e.target.value })}
-          className="glass"
-          required
-        />
+        <div className="flex items-center justify-between">
+          <Label htmlFor="address">Delivery Address</Label>
+          <button 
+            type="button"
+            className="text-xs text-primary hover:underline flex items-center"
+            onClick={() => setUseMap(!useMap)}
+          >
+            <MapPin className="h-3 w-3 mr-1" />
+            {useMap ? "Hide map" : "Use map"}
+          </button>
+        </div>
+        
+        {useMap ? (
+          <Map onAddressSelected={handleAddressSelected} />
+        ) : (
+          <Textarea
+            id="address"
+            value={formData.address}
+            onChange={(e) => setFormData({ ...formData, address: e.target.value })}
+            className="glass"
+            required
+          />
+        )}
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div className="space-y-2">
-          <Label htmlFor="size">Bed Size</Label>
-          <Input
-            id="size"
-            value={formData.size}
-            readOnly
-            className="glass bg-muted"
-          />
-        </div>
-        <div className="space-y-2">
-          <Label htmlFor="dimension">Dimension</Label>
-          <Input
-            id="dimension"
-            value={formData.dimension}
-            readOnly
-            className="glass bg-muted"
-          />
-        </div>
-        <div className="space-y-2">
-          <Label htmlFor="treatment">Treatment</Label>
-          <Input
-            id="treatment"
-            value={formData.treatment}
-            readOnly
-            className="glass bg-muted"
-          />
-        </div>
-      </div>
+      {!cartItems || cartItems.length === 0 ? (
+        <>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="space-y-2">
+              <Label htmlFor="size">Bed Size</Label>
+              <Input
+                id="size"
+                value={formData.size}
+                readOnly
+                className="glass bg-muted"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="dimension">Dimension</Label>
+              <Input
+                id="dimension"
+                value={formData.dimension}
+                readOnly
+                className="glass bg-muted"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="treatment">Treatment</Label>
+              <Input
+                id="treatment"
+                value={formData.treatment}
+                readOnly
+                className="glass bg-muted"
+              />
+            </div>
+          </div>
 
-      <div className="space-y-2">
-        <Label htmlFor="quantity">Quantity</Label>
-        <Input
-          id="quantity"
-          type="number"
-          min="1"
-          value={formData.quantity}
-          onChange={(e) => setFormData({ ...formData, quantity: e.target.value })}
-          className="glass"
-          required
-        />
-      </div>
+          <div className="space-y-2">
+            <Label htmlFor="quantity">Quantity</Label>
+            <Input
+              id="quantity"
+              type="number"
+              min="1"
+              value={formData.quantity}
+              onChange={(e) => setFormData({ ...formData, quantity: e.target.value })}
+              className="glass"
+              required
+            />
+          </div>
+        </>
+      ) : (
+        <div className="space-y-4">
+          <Label>Order Summary</Label>
+          <div className="rounded-lg bg-muted/30 p-4">
+            <div className="space-y-2">
+              {cartItems.map((item, index) => (
+                <div key={index} className="flex justify-between text-sm">
+                  <div className="flex-1">
+                    <span className="font-medium">{item.size.charAt(0).toUpperCase() + item.size.slice(1)} Bed Pallet</span>
+                    <span className="text-muted-foreground ml-2">
+                      {item.customPallets 
+                        ? `${item.customPallets.length} custom size(s)` 
+                        : `${item.dimension} • ${item.treatment}`}
+                    </span>
+                  </div>
+                  <div className="text-right">
+                    <span className="font-medium">₹{item.price}</span>
+                    <span className="text-muted-foreground ml-2">× {item.quantity}</span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
 
       <div className="space-y-2">
         <Label htmlFor="notes">Additional Notes</Label>
@@ -161,12 +226,18 @@ const OrderForm = ({
         />
       </div>
 
-      <Button
-        type="submit"
-        className="w-full glass-button"
-      >
-        Place Order
-      </Button>
+      <div className="pt-4">
+        <p className="text-sm text-muted-foreground mb-4 flex items-center">
+          <MapPin className="mr-2 h-4 w-4" />
+          Pay on delivery - No advance payment required
+        </p>
+        <Button
+          type="submit"
+          className="w-full glass-button"
+        >
+          Place Order
+        </Button>
+      </div>
     </motion.form>
   );
 };
