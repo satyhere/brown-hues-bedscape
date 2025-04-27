@@ -8,6 +8,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Index from "./pages/Index";
 import Order from "./pages/Order";
 import NotFound from "./pages/NotFound";
+import CustomCursor from "./components/CustomCursor";
 
 const App: React.FC = () => {
   const [queryClient] = useState(() => new QueryClient());
@@ -17,6 +18,7 @@ const App: React.FC = () => {
       <TooltipProvider>
         <Toaster />
         <Sonner />
+        <CustomCursor />
         <BrowserRouter>
           <Routes>
             <Route path="/" element={<Index />} />
