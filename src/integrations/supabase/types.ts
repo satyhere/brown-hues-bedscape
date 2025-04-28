@@ -9,7 +9,76 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
-      [_ in never]: never
+      orders: {
+        Row: {
+          id: string
+          created_at: string
+          customer_name: string
+          customer_email: string
+          customer_phone: string
+          delivery_address: string
+          notes: string | null
+          status: 'pending' | 'confirmed' | 'delivered' | 'cancelled'
+          total_amount: number
+        }
+        Insert: {
+          id?: string
+          created_at?: string
+          customer_name: string
+          customer_email: string
+          customer_phone: string
+          delivery_address: string
+          notes?: string | null
+          status?: 'pending' | 'confirmed' | 'delivered' | 'cancelled'
+          total_amount: number
+        }
+        Update: {
+          id?: string
+          created_at?: string
+          customer_name?: string
+          customer_email?: string
+          customer_phone?: string
+          delivery_address?: string
+          notes?: string | null
+          status?: 'pending' | 'confirmed' | 'delivered' | 'cancelled'
+          total_amount?: number
+        }
+      }
+      order_items: {
+        Row: {
+          id: string
+          created_at: string
+          order_id: string
+          size: string
+          dimension: string
+          treatment: string
+          price: number
+          quantity: number
+          custom_pallets: Json | null
+        }
+        Insert: {
+          id?: string
+          created_at?: string
+          order_id: string
+          size: string
+          dimension: string
+          treatment: string
+          price: number
+          quantity: number
+          custom_pallets?: Json | null
+        }
+        Update: {
+          id?: string
+          created_at?: string
+          order_id?: string
+          size?: string
+          dimension?: string
+          treatment?: string
+          price?: number
+          quantity?: number
+          custom_pallets?: Json | null
+        }
+      }
     }
     Views: {
       [_ in never]: never

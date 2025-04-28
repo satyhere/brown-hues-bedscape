@@ -1,69 +1,137 @@
-# Welcome to your Lovable project
+# Brown Hues Bedscape
 
-## Project info
+A modern, interactive web application for customizing and ordering premium bed pallets in Bangalore. Built with React, TypeScript, and Vite.
 
-**URL**: https://lovable.dev/projects/6c7bcd14-6e7f-4eac-84e1-c7889a05fe0f
+## 🌟 Features
 
-## How can I edit this code?
+- Interactive 3D bed pallet configurator
+- Real-time size visualization
+- Custom dimension support
+- Multiple treatment options
+- Responsive design
+- Shopping cart functionality
+- Modern UI with animations
+- Supabase integration for backend services
 
-There are several ways of editing your application.
+## 🛠️ Tech Stack
 
-**Use Lovable**
+- **Frontend Framework:** React 18 with TypeScript
+- **Build Tool:** Vite
+- **Styling:** Tailwind CSS with custom animations
+- **UI Components:** Shadcn UI
+- **State Management:** React Query
+- **Routing:** React Router v6
+- **Animations:** Framer Motion
+- **Backend:** Supabase
+- **Maps Integration:** Mapbox GL
+- **Form Handling:** React Hook Form with Zod validation
+- **Date Handling:** date-fns
+- **Charts:** Recharts
+- **Notifications:** Sonner
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/6c7bcd14-6e7f-4eac-84e1-c7889a05fe0f) and start prompting.
+## 🚀 Getting Started
 
-Changes made via Lovable will be committed automatically to this repo.
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/yourusername/brown-hues-bedscape.git
+   cd brown-hues-bedscape
+   ```
 
-**Use your preferred IDE**
+2. **Install dependencies**
+   ```bash
+   npm install
+   ```
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+3. **Set up environment variables**
+   Create a `.env` file in the root directory with the following variables:
+   ```
+   VITE_SUPABASE_URL=your_supabase_url
+   VITE_SUPABASE_ANON_KEY=your_supabase_anon_key
+   VITE_MAPBOX_TOKEN=your_mapbox_token
+   ```
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
-
-Follow these steps:
-
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
-
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
-
-# Step 3: Install the necessary dependencies.
-npm i
-
-# Step 4: Start the development server with auto-reloading and an instant preview.
+4. **Start the development server**
+   ```bash
 npm run dev
 ```
 
-**Edit a file directly in GitHub**
+5. **Build for production**
+   ```bash
+   npm run build
+   ```
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+## 📁 Project Structure
 
-**Use GitHub Codespaces**
+```
+src/
+├── components/     # Reusable UI components
+├── pages/         # Page components
+├── hooks/         # Custom React hooks
+├── lib/           # Utility functions and configurations
+├── integrations/  # Third-party service integrations
+└── types/         # TypeScript type definitions
+```
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+## 🔧 Configuration
 
-## What technologies are used for this project?
+The project uses several configuration files:
+- `vite.config.ts` - Vite configuration
+- `tsconfig.json` - TypeScript configuration
+- `tailwind.config.ts` - Tailwind CSS configuration
+- `postcss.config.js` - PostCSS configuration
+- `eslint.config.js` - ESLint configuration
 
-This project is built with .
+## 🎨 Design System
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+The project uses a custom design system built on top of Shadcn UI with:
+- Custom color palette
+- Typography system
+- Component variants
+- Animation system
+- Responsive breakpoints
 
-## How can I deploy this project?
+## 📱 Responsive Design
 
-Simply open [Lovable](https://lovable.dev/projects/6c7bcd14-6e7f-4eac-84e1-c7889a05fe0f) and click on Share -> Publish.
+The application is fully responsive and optimized for:
+- Mobile devices
+- Tablets
+- Desktop screens
+- Large displays
 
-## I want to use a custom domain - is that possible?
+## 🔒 Security
 
-We don't support custom domains (yet). If you want to deploy your project under your own domain then we recommend using Netlify. Visit our docs for more details: [Custom domains](https://docs.lovable.dev/tips-tricks/custom-domain/)
+- Environment variables for sensitive data
+- Supabase authentication
+- Secure API endpoints
+- Input validation with Zod
+
+## 🚀 Performance
+
+- Code splitting
+- Lazy loading
+- Image optimization
+- Caching strategies
+- Bundle size optimization
+
+## 🤝 Contributing
+
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
+
+## 📄 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## 👥 Authors
+
+- Your Name - Initial work
+
+## 🙏 Acknowledgments
+
+- Shadcn UI for the component library
+- Supabase for the backend services
+- Mapbox for mapping services
+- All contributors and supporters

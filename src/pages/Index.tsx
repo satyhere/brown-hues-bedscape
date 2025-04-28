@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { MapPin, Truck, Shield, CheckCircle2 } from "lucide-react";
@@ -8,7 +7,10 @@ import { Button } from "@/components/ui/button";
 import TestimonialSection from "@/components/TestimonialSection";
 import Header from "@/components/Header";
 import SizeVisualizer from "@/components/SizeVisualizer";
-import CartSidebar, { useCart } from "@/components/CartSidebar";
+import CartSidebar from "@/components/CartSidebar";
+import { useBedConfig } from "@/hooks/useBedConfig";
+import { PRODUCT_SIZES, CONFIGURATION_STEPS, TREATMENT_OPTIONS } from "@/lib/constants";
+import { SupabaseTest } from '../components/SupabaseTest'
 
 // Types
 type Size = 'single' | 'double' | 'queen' | 'king' | 'custom';
@@ -20,191 +22,113 @@ interface ProductSize {
   dimensions: string[];
 }
 
-const PRODUCT_SIZES: ProductSize[] = [
-  {
-    title: "Single Bed",
-    size: "single",
-    price: 1900,
-    dimensions: ["72x36"]
-  }, 
-  {
-    title: "Double Bed",
-    size: "double",
-    price: 2200,
-    dimensions: ["72x48"]
-  }, 
-  {
-    title: "Queen Size",
-    size: "queen",
-    price: 3400,
-    dimensions: ["60x72", "60x75", "60x78"]
-  }, 
-  {
-    title: "King Size",
-    size: "king",
-    price: 3600,
-    dimensions: ["72x72", "72x75", "72x78"]
-  },
-  {
-    title: "Custom",
-    size: "custom",
-    price: 0, // Price will be calculated based on dimensions
-    dimensions: ["Custom"]
-  }
-];
-
 const Index = () => {
-  const [currentStep, setCurrentStep] = useState<"size" | "dimension" | "treatment">("size");
-  const [selectedSize, setSelectedSize] = useState<Size | "">("");
-  const [selectedDimension, setSelectedDimension] = useState("");
-  const [selectedTreatment, setSelectedTreatment] = useState<Treatment | "">("");
   const navigate = useNavigate();
-  
-  const { addToCart } = useCart();
+  const {
+    config,
+    handleNext,
+    handleSizeSelect,
+    handleDimensionSelect,
+    handleTreatmentSelect,
+    handleAddToCart
+  } = useBedConfig();
 
   // Helper functions
   const getProductData = (size: Size | "") => PRODUCT_SIZES.find(ps => ps.size === size);
   
-  const handleNext = () => {
-    if (currentStep === "size" && selectedSize) {
-      setCurrentStep("dimension");
-    } else if (currentStep === "dimension" && selectedDimension) {
-      setCurrentStep("treatment");
-    }
-  };
-  
-  const handleAddToCart = () => {
-    if (currentStep === "treatment" && selectedTreatment) {
-      if (selectedSize === 'custom') {
-        // For custom sizes, we'll get the data from the SizeVisualizer component
-        // This is just a placeholder - we'll need to lift state up or use a context
-        // to properly communicate between components
-        addToCart({
-          size: selectedSize,
-          dimension: "Custom",
-          treatment: selectedTreatment,
-          price: 0, // Will be calculated in the cart
-          quantity: 1,
-          customPallets: JSON.parse(localStorage.getItem('customPallets') || '[]')
-        });
-      } else {
-        const productData = getProductData(selectedSize as Size);
-        addToCart({
-          size: selectedSize as Size,
-          dimension: selectedDimension,
-          treatment: selectedTreatment,
-          price: productData?.price || 0,
-          quantity: 1
-        });
-      }
-      
-      toast.success("Configuration complete!");
-      
-      // Reset configuration
-      setCurrentStep("size");
-      setSelectedSize("");
-      setSelectedDimension("");
-      setSelectedTreatment("");
-    }
-  };
-
-  // 3D Cover (static image for now, can be swapped for a 3D viewer)
-  const Cover = () => (
-    <div className="w-full flex justify-center items-center mb-0 mt-8 animate-fade-in">
-      <img 
-        src="/bed-3d-render.png" 
-        alt="3D Bed Pallet Design" 
-        className="rounded-2xl drop-shadow-xl max-w-[350px] md:max-w-[420px] sm:max-h-[300px] object-contain border border-accent" 
-        style={{
-          background: "linear-gradient(135deg,#fff,#eee 55%,#e2d1c3 100%)"
-        }}
-      />
-    </div>
-  );
-
   return (
     <div className="min-h-screen w-full overflow-x-hidden">
       <Header />
-      <div className="fixed top-4 right-4 z-50">
-        <CartSidebar />
-      </div>
       
       {/* Hero Section */}
-      <section className="relative min-h-[60vh] hero-gradient px-2 py-3 md:py-9 pt-14 md:pt-20" style={{
+      <section className="relative min-h-[45vh] md:min-h-[50vh] hero-gradient px-2 py-2 md:py-4 pt-16 md:pt-24" style={{
         paddingBottom: 0
       }}>
         <motion.div 
-          initial={{
-            opacity: 0,
-            y: 18
-          }} 
-          animate={{
-            opacity: 1,
-            y: 0
-          }} 
-          transition={{
-            duration: 0.67
-          }} 
+          initial={{ opacity: 0, y: 18 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.67 }}
           className="container mx-auto text-center"
         >
-          <span className="glass px-3 py-1 rounded-full text-sm font-medium mb-3 inline-block tracking-wide shadow-sm">
+          <motion.span 
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.2 }}
+            className="glass px-3 py-1 rounded-full text-xs md:text-sm font-medium mb-3 md:mb-4 inline-block tracking-wide shadow-sm"
+          >
             Premium Bed Pallets in Bangalore
-          </span>
-          <h1 className="font-roboto text-[2.6rem] sm:text-5xl mb-2 text-center font-extralight text-card-foreground">Design Your Bed</h1>
-          <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto mb-3">
+          </motion.span>
+          <motion.h1 
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.3 }}
+            className="font-roboto text-[2rem] sm:text-4xl md:text-5xl mb-2 md:mb-3 text-center font-extralight text-card-foreground"
+          >
+            Design Your Bed
+          </motion.h1>
+          <motion.p 
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.4 }}
+            className="text-base md:text-lg lg:text-xl text-muted-foreground max-w-2xl mx-auto mb-4 md:mb-6 px-2"
+          >
             Custom, high-quality Pinewood Pallets delivered right to your doorstep.
-          </p>
-          <Cover />
+          </motion.p>
+          
           {/* Step Navigation */}
-          <div className="flex justify-center items-center gap-2 mb-0 mt-3">
-            {[
-              { key: "size", label: "Select Size" },
-              { key: "dimension", label: "Select Dimension" },
-              { key: "treatment", label: "Select Treatment" }
-            ].map((step, i) => (
+          <motion.div 
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.5 }}
+            className="flex flex-wrap justify-center items-center gap-2 mb-0 mt-6 md:mt-8 px-2"
+          >
+            {CONFIGURATION_STEPS.map((step, i) => (
               <motion.div 
                 key={step.key} 
-                className={`flex items-center ${i !== 0 ? "ml-4" : ""}`}
+                className={`flex items-center ${i !== 0 ? "ml-2 md:ml-4" : ""}`}
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ delay: i * 0.17 }}
               >
-                <div className={"relative flex items-center justify-center w-9 h-9 rounded-full border-2 " + 
-                  (currentStep === step.key ? "bg-primary text-secondary border-primary scale-110 shadow-lg" : "bg-secondary text-primary border-secondary shadow-none") + 
-                  (i !== 2 ? " mr-2" : "")
-                }>
-                  <span className="text-lg font-bold">{i + 1}</span>
+                <div className={`relative flex items-center justify-center w-8 h-8 md:w-9 md:h-9 rounded-full border-2 ${
+                  config.currentStep === step.key 
+                    ? "bg-primary text-secondary border-primary scale-110 shadow-lg" 
+                    : "bg-secondary text-primary border-secondary shadow-none"
+                } ${i !== 2 ? " mr-2" : ""}`}>
+                  <span className="text-base md:text-lg font-bold">{i + 1}</span>
                 </div>
-                {i !== 2 && <div className="absolute left-full mx-1 w-6 h-0.5 bg-primary/20" />}
-                <span className={"ml-2 text-xs font-semibold uppercase tracking-wide" + 
-                  (currentStep === step.key ? " text-primary" : " text-muted-foreground")
-                }>
+                {i !== 2 && <div className="absolute left-full mx-1 w-4 md:w-6 h-0.5 bg-primary/20" />}
+                <span className={`ml-2 text-[10px] md:text-xs font-semibold uppercase tracking-wide ${
+                  config.currentStep === step.key ? " text-primary" : " text-muted-foreground"
+                }`}>
                   {step.label}
                 </span>
               </motion.div>
             ))}
-          </div>
+          </motion.div>
         </motion.div>
       </section>
 
       {/* Size Visualizer */}
-      {selectedSize && (
-        <SizeVisualizer selectedSize={selectedSize} />
+      {config.selectedSize && (
+        <SizeVisualizer selectedSize={config.selectedSize} />
       )}
 
-      {/* Configurator (merged Section) */}
-      <section className="py-2 px-1 md:px-4" id="configurator">
+      {/* Configurator Section */}
+      <section className="py-4 md:py-6 px-2 md:px-4" id="configurator">
         <div className="container mx-auto max-w-4xl">
           <motion.div 
             initial={{ opacity: 0, y: 13 }}
-            animate={{ opacity: 1, y: 0 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-100px" }}
+            transition={{ duration: 0.5 }}
             className="space-y-4"
           >
-            {/* ======= Select Size (with prices) ======= */}
-            {currentStep === "size" && (
+            {/* Size Selection */}
+            {config.currentStep === "size" && (
               <>
-                <h2 className="text-2xl font-bold text-center mb-1">Select Size</h2>
-                <div className="grid grid-cols-2 md:grid-cols-5 gap-3 mb-1">
+                <h2 className="text-xl md:text-2xl font-bold text-center mb-2 md:mb-4">Select Size</h2>
+                <div className="grid grid-cols-2 md:grid-cols-5 gap-2 md:gap-3 mb-2 md:mb-4">
                   {PRODUCT_SIZES.map(sizeObj => (
                     <motion.div 
                       key={sizeObj.size}
@@ -213,25 +137,30 @@ const Index = () => {
                         boxShadow: "0 6px 32px 0 rgba(180,150,125,0.15)" 
                       }}
                       whileTap={{ scale: 0.97 }}
-                      className={`glass p-4 md:p-5 rounded-xl card-animate cursor-pointer flex flex-col items-center justify-center hover:shadow-accent transition-all duration-200 ${selectedSize === sizeObj.size ? "ring-2 ring-primary border-primary scale-105 shadow-xl" : ""}`}
-                      onClick={() => {
-                        setSelectedSize(sizeObj.size);
-                        setSelectedDimension("");
-                        setSelectedTreatment("");
-                      }}
+                      className={`glass p-3 md:p-4 rounded-xl card-animate cursor-pointer flex flex-col items-center justify-center hover:shadow-accent transition-all duration-200 ${
+                        config.selectedSize === sizeObj.size 
+                          ? "ring-2 ring-primary border-primary scale-105 shadow-xl" 
+                          : ""
+                      }`}
+                      onClick={() => handleSizeSelect(sizeObj.size)}
                     >
-                      <span className="block text-lg font-bold mb-1 capitalize">{sizeObj.title}</span>
-                      <span className="text-xs mt-0 text-muted-foreground mb-2">
-                        {sizeObj.size === 'custom' ? 'Multiple sizes' : `${sizeObj.dimensions.join(", ")} inch`}
+                      <span className="block text-base md:text-lg font-bold mb-1 capitalize">
+                        {sizeObj.title}
                       </span>
-                      <span className="block text-primary text-2xl font-semibold">
+                      <span className="text-[10px] md:text-xs mt-0 text-muted-foreground mb-1 md:mb-2">
+                        {sizeObj.size === 'custom' 
+                          ? 'Multiple sizes' 
+                          : `${sizeObj.dimensions.join(", ")} inch`
+                        }
+                      </span>
+                      <span className="block text-primary text-xl md:text-2xl font-semibold">
                         {sizeObj.size === 'custom' ? 'Variable' : `₹${sizeObj.price}`}
                       </span>
-                      {selectedSize === sizeObj.size && (
+                      {config.selectedSize === sizeObj.size && (
                         <motion.div 
                           initial={{ opacity: 0 }}
                           animate={{ opacity: 1 }}
-                          className="mt-2 text-xs text-primary font-medium animate-fade-in"
+                          className="mt-1 md:mt-2 text-[10px] md:text-xs text-primary font-medium animate-fade-in"
                         >
                           Selected
                         </motion.div>
@@ -239,11 +168,11 @@ const Index = () => {
                     </motion.div>
                   ))}
                 </div>
-                <div className="mt-1 flex justify-end">
+                <div className="mt-2 md:mt-4 flex justify-end">
                   <Button 
-                    className="h-9 px-3 py-2" 
+                    className="h-8 md:h-9 px-3 py-2 text-sm md:text-base" 
                     onClick={handleNext}
-                    disabled={!selectedSize}
+                    disabled={!config.selectedSize}
                   >
                     Next
                   </Button>
@@ -251,122 +180,84 @@ const Index = () => {
               </>
             )}
 
-            {/* ======= Select Dimension ======= */}
-            {currentStep === "dimension" && selectedSize && (
-              <>
-                <h2 className="text-2xl font-bold text-center mb-1">
-                  {selectedSize === 'custom' ? 'Custom Dimensions' : 'Select Dimension'}
-                </h2>
-                <div className="grid grid-cols-2 md:grid-cols-3 gap-3 mb-1">
-                  {selectedSize === 'custom' ? (
+            {/* Dimension Selection */}
+            {config.currentStep === "dimension" && config.selectedSize && (
+              <div className="space-y-4">
+                <h2 className="text-xl md:text-2xl font-bold text-center">Select Dimensions</h2>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-3 md:gap-4">
+                  {PRODUCT_SIZES.find(s => s.size === config.selectedSize)?.dimensions.map(dimension => (
                     <motion.div
-                      whileHover={{
-                        scale: 1.07,
-                        boxShadow: "0 8px 28px 0 rgba(180,150,125,0.10)"
-                      }}
-                      whileTap={{ scale: 0.92 }}
-                      className={`glass p-4 md:p-4 rounded-xl card-animate cursor-pointer flex flex-col items-center justify-center transition-all duration-200 ring-2 ring-primary border-primary scale-105 shadow-xl col-span-full`}
-                      onClick={() => setSelectedDimension("custom")}
+                      key={dimension}
+                      whileHover={{ scale: 1.02 }}
+                      whileTap={{ scale: 0.98 }}
+                      className={`p-3 md:p-4 rounded-lg border cursor-pointer ${
+                        config.selectedDimension === dimension
+                          ? "border-primary bg-primary/5"
+                          : "border-border hover:border-primary/50"
+                      }`}
+                      onClick={() => handleDimensionSelect(dimension)}
                     >
-                      <span className="block text-lg font-semibold mb-1">Custom Dimensions</span>
-                      <p className="text-sm text-muted-foreground">Configure multiple pallets with custom sizes</p>
-                      <CheckCircle2 className="w-7 h-7 text-primary mt-2 animate-fade-in" />
-                    </motion.div>
-                  ) : (
-                    (getProductData(selectedSize)?.dimensions ?? []).map(dimension => (
-                      <motion.div 
-                        key={dimension}
-                        whileHover={{
-                          scale: 1.07,
-                          boxShadow: "0 8px 28px 0 rgba(180,150,125,0.10)"
-                        }}
-                        whileTap={{ scale: 0.92 }}
-                        className={`glass p-4 md:p-4 rounded-xl card-animate cursor-pointer flex flex-col items-center justify-center transition-all duration-200 ${selectedDimension === dimension ? "ring-2 ring-primary border-primary scale-105 shadow-xl" : ""}`}
-                        onClick={() => setSelectedDimension(dimension)}
-                      >
-                        <span className="block text-lg font-semibold mb-1">{dimension} inch</span>
-                        {selectedDimension === dimension && (
-                          <CheckCircle2 className="w-7 h-7 text-primary mt-2 animate-fade-in" />
-                        )}
-                      </motion.div>
-                    ))
-                  )}
-                </div>
-                <div className="mt-1 flex justify-between">
-                  <Button 
-                    variant="outline" 
-                    className="h-9 px-4 py-2" 
-                    onClick={() => setCurrentStep("size")}
-                  >
-                    Back
-                  </Button>
-                  <Button 
-                    className="h-9 px-3 py-2" 
-                    onClick={handleNext}
-                    disabled={!selectedDimension && selectedSize !== 'custom'}
-                  >
-                    Next
-                  </Button>
-                </div>
-              </>
-            )}
-
-            {/* ======== Select Treatment ======= */}
-            {currentStep === "treatment" && (
-              <>
-                <h2 className="text-2xl font-bold text-center mb-1">Select Treatment</h2>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mb-1">
-                  {[
-                    { id: "natural", name: "Natural Finish", description: "Classic wood texture" },
-                    { id: "polished", name: "Polished", description: "Smooth glossy finish" },
-                    { id: "stained", name: "Stained", description: "Rich dark color" }
-                  ].map(treatment => (
-                    <motion.div 
-                      key={treatment.id}
-                      whileHover={{
-                        scale: 1.07,
-                        boxShadow: "0 8px 28px 0 rgba(180,150,125,0.08)"
-                      }}
-                      whileTap={{ scale: 0.95 }}
-                      className={`glass p-5 rounded-xl card-animate cursor-pointer transition-all duration-200 flex flex-col items-center ${selectedTreatment === treatment.id ? "ring-2 ring-primary border-primary scale-105 shadow-xl" : ""}`}
-                      onClick={() => setSelectedTreatment(treatment.id as Treatment)}
-                    >
-                      <span className="block text-lg font-bold mb-1">{treatment.name}</span>
-                      <span className="text-xs text-muted-foreground mb-2">
-                        {treatment.description}
-                      </span>
-                      {selectedTreatment === treatment.id && (
-                        <CheckCircle2 className="w-7 h-7 text-primary mt-2 animate-fade-in" />
-                      )}
+                      <div className="text-center">
+                        <span className="text-base md:text-lg font-semibold">{dimension}</span>
+                        <p className="text-xs md:text-sm text-muted-foreground">inches</p>
+                      </div>
                     </motion.div>
                   ))}
                 </div>
-                <div className="mt-1 flex justify-between">
-                  <Button 
-                    variant="outline" 
-                    className="h-9 px-4 py-2" 
-                    onClick={() => setCurrentStep("dimension")}
+                <div className="flex justify-end">
+                  <Button
+                    onClick={handleNext}
+                    disabled={!config.selectedDimension}
+                    className="text-sm md:text-base"
                   >
-                    Back
+                    Next
                   </Button>
-                  <Button 
-                    className="h-9 px-3 py-2" 
-                    onClick={handleAddToCart} 
-                    disabled={!selectedTreatment}
+                </div>
+              </div>
+            )}
+
+            {/* Treatment Selection */}
+            {config.currentStep === "treatment" && (
+              <div className="space-y-4">
+                <h2 className="text-xl md:text-2xl font-bold text-center">Select Treatment</h2>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-3 md:gap-4">
+                  {TREATMENT_OPTIONS.map(treatment => (
+                    <motion.div
+                      key={treatment.value}
+                      whileHover={{ scale: 1.02 }}
+                      whileTap={{ scale: 0.98 }}
+                      className={`p-3 md:p-4 rounded-lg border cursor-pointer ${
+                        config.selectedTreatment === treatment.value
+                          ? "border-primary bg-primary/5"
+                          : "border-border hover:border-primary/50"
+                      }`}
+                      onClick={() => handleTreatmentSelect(treatment.value)}
+                    >
+                      <div className="text-center">
+                        <span className="text-base md:text-lg font-semibold">{treatment.label}</span>
+                      </div>
+                    </motion.div>
+                  ))}
+                </div>
+                <div className="flex justify-end">
+                  <Button
+                    onClick={handleAddToCart}
+                    disabled={!config.selectedTreatment}
+                    className="text-sm md:text-base"
                   >
                     Add to Cart
                   </Button>
                 </div>
-              </>
+              </div>
             )}
           </motion.div>
         </div>
       </section>
 
       {/* Features */}
-      <section className="py-4 px-2 md:px-4">
+      <section className="py-6 md:py-8 px-2 md:px-4">
         <div className="container mx-auto">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-3 md:gap-4">
             {[
               { 
                 icon: Shield, 
@@ -388,6 +279,7 @@ const Index = () => {
                 key={index}
                 initial={{ opacity: 0, y: 14 }}
                 whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: "-100px" }}
                 transition={{ 
                   delay: index * 0.20, 
                   duration: 0.6,
@@ -397,11 +289,11 @@ const Index = () => {
                   scale: 1.065,
                   rotate: 1.5
                 }}
-                className="glass p-5 rounded-xl card-animate flex flex-col items-center group cursor-pointer"
+                className="glass p-4 md:p-5 rounded-xl card-animate flex flex-col items-center group cursor-pointer"
               >
-                <feature.icon className="w-11 h-11 mb-3 text-primary group-hover:animate-float group-hover:text-accent transition-all duration-200" />
-                <h3 className="text-lg md:text-xl font-semibold mb-1 text-center">{feature.title}</h3>
-                <p className="text-muted-foreground text-center">{feature.description}</p>
+                <feature.icon className="w-9 h-9 md:w-11 md:h-11 mb-2 md:mb-3 text-primary group-hover:animate-float group-hover:text-accent transition-all duration-200" />
+                <h3 className="text-base md:text-lg lg:text-xl font-semibold mb-1 text-center">{feature.title}</h3>
+                <p className="text-sm md:text-base text-muted-foreground text-center">{feature.description}</p>
               </motion.div>
             ))}
           </div>
@@ -414,32 +306,32 @@ const Index = () => {
       </section>
 
       {/* Contact Section */}
-      <section className="py-6 px-2 glass mt-5" id="contact">
+      <section className="py-6 md:py-8 px-2 md:px-4 glass mt-4 md:mt-5" id="contact">
         <div className="container mx-auto max-w-4xl">
-          <h2 className="text-2xl font-bold text-center mb-3">Contact Us</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <h2 className="text-xl md:text-2xl font-bold text-center mb-3 md:mb-4">Contact Us</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
             <div>
-              <h3 className="text-lg font-semibold mb-2">brownhues.co</h3>
-              <p className="mb-3">
+              <h3 className="text-base md:text-lg font-semibold mb-2">brownhues.co</h3>
+              <p className="text-sm md:text-base mb-2 md:mb-3">
                 Custom, high-quality pinewood pallets delivered to your doorstep in Bangalore.
               </p>
-              <p className="mb-2"><strong>Email:</strong> info@brownhues.co</p>
-              <p className="mb-2"><strong>Phone:</strong> +91 9876543210</p>
-              <p><strong>Address:</strong> Koramangala, Bangalore - 560034</p>
+              <p className="text-sm md:text-base mb-2"><strong>Email:</strong> info@brownhues.co</p>
+              <p className="text-sm md:text-base mb-2"><strong>Phone:</strong> +91 9876543210</p>
+              <p className="text-sm md:text-base"><strong>Address:</strong> Koramangala, Bangalore - 560034</p>
             </div>
-            <div className="glass p-6 rounded-xl">
-              <h3 className="text-lg font-semibold mb-3">Send Us a Message</h3>
-              <form className="space-y-3">
+            <div className="glass p-4 md:p-6 rounded-xl">
+              <h3 className="text-base md:text-lg font-semibold mb-2 md:mb-3">Send Us a Message</h3>
+              <form className="space-y-2 md:space-y-3">
                 <div>
-                  <input type="text" placeholder="Your Name" className="w-full p-3 glass rounded-md" />
+                  <input type="text" placeholder="Your Name" className="w-full p-2 md:p-3 glass rounded-md text-sm md:text-base" />
                 </div>
                 <div>
-                  <input type="email" placeholder="Your Email" className="w-full p-3 glass rounded-md" />
+                  <input type="email" placeholder="Your Email" className="w-full p-2 md:p-3 glass rounded-md text-sm md:text-base" />
                 </div>
                 <div>
-                  <textarea placeholder="Your Message" className="w-full p-3 glass rounded-md" rows={4}></textarea>
+                  <textarea placeholder="Your Message" className="w-full p-2 md:p-3 glass rounded-md text-sm md:text-base" rows={4}></textarea>
                 </div>
-                <Button className="w-full">Send Message</Button>
+                <Button className="w-full text-sm md:text-base">Send Message</Button>
               </form>
             </div>
           </div>
@@ -447,9 +339,13 @@ const Index = () => {
       </section>
 
       {/* Footer */}
-      <footer className="pt-4 pb-8 px-2 text-center">
-        <p>© 2025 brownhues.co. All rights reserved.</p>
+      <footer className="pt-4 pb-6 md:pb-8 px-2 text-center">
+        <p className="text-sm md:text-base">© 2025 brownhues.co. All rights reserved.</p>
       </footer>
+
+      <main>
+        <SupabaseTest />
+      </main>
     </div>
   );
 };

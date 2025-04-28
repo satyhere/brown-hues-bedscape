@@ -1,4 +1,3 @@
-
 import { ShoppingCart, X, Plus, Minus, MapPin } from "lucide-react";
 import { Button } from "./ui/button";
 import { 
@@ -15,20 +14,7 @@ import { Separator } from "./ui/separator";
 import { motion, AnimatePresence } from "framer-motion";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
-
-export interface CartItem {
-  id: string;
-  size: string;
-  dimension: string;
-  treatment: string;
-  price: number;
-  quantity: number;
-  customPallets?: {
-    width: string;
-    length: string;
-    quantity: string;
-  }[];
-}
+import { CartItem } from "../types/bed";
 
 interface CartSidebarProps {
   isOpen?: boolean;
@@ -81,34 +67,45 @@ export const useCart = () => {
   }, [cart]);
   
   const addToCart = (item: Omit<CartItem, "id">) => {
-    setCart(prev => {
-      const newItem = {
-        ...item,
-        id: crypto.randomUUID(),
-        price: item.price || getPriceForSize(item.size)
-      };
-      return [...prev, newItem];
+    const newItem = {
+      ...item,
+      id: crypto.randomUUID(),
+      price: item.price || getPriceForSize(item.size)
+    };
+    
+    setCart(prevCart => {
+      const updatedCart = [...prevCart, newItem];
+      localStorage.setItem('cart', JSON.stringify(updatedCart));
+      return updatedCart;
     });
+    
     setIsCartOpen(true);
     toast.success("Item added to cart!");
   };
   
   const removeFromCart = (id: string) => {
-    setCart(prev => prev.filter(item => item.id !== id));
+    setCart(prevCart => {
+      const updatedCart = prevCart.filter(item => item.id !== id);
+      localStorage.setItem('cart', JSON.stringify(updatedCart));
+      return updatedCart;
+    });
     toast("Item removed from cart");
   };
   
   const updateQuantity = (id: string, newQuantity: number) => {
     if (newQuantity < 1) return;
-    setCart(prev => 
-      prev.map(item => 
+    setCart(prevCart => {
+      const updatedCart = prevCart.map(item => 
         item.id === id ? { ...item, quantity: newQuantity } : item
-      )
-    );
+      );
+      localStorage.setItem('cart', JSON.stringify(updatedCart));
+      return updatedCart;
+    });
   };
   
   const clearCart = () => {
     setCart([]);
+    localStorage.removeItem('cart');
   };
   
   const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
@@ -169,14 +166,14 @@ const CartSidebar = ({ isOpen, onOpenChange }: CartSidebarProps) => {
   return (
     <Sheet open={open} onOpenChange={setOpen}>
       <SheetTrigger asChild>
-        <Button variant="outline" size="icon" className="relative">
-          <ShoppingCart className="h-5 w-5" />
+        <button className="relative glass-button p-2 rounded-full shadow">
+          <ShoppingCart className="h-6 w-6 text-primary" />
           {totalItems > 0 && (
             <span className="absolute -top-2 -right-2 bg-primary text-primary-foreground rounded-full h-5 w-5 text-xs flex items-center justify-center">
               {totalItems}
             </span>
           )}
-        </Button>
+        </button>
       </SheetTrigger>
       <SheetContent className="sm:max-w-md w-[90vw]">
         <SheetHeader>
@@ -254,35 +251,45 @@ const CartSidebar = ({ isOpen, onOpenChange }: CartSidebarProps) => {
                         <Plus className="h-3 w-3" />
                       </Button>
                     </div>
-                    <Separator />
                   </motion.div>
                 ))}
               </AnimatePresence>
             </div>
             
-            <div className="pt-4 space-y-4">
-              <div className="flex items-center justify-between">
-                <span className="text-muted-foreground">Subtotal</span>
+            <Separator className="my-4" />
+            
+            <div className="space-y-4">
+              <div className="flex justify-between">
+                <span>Subtotal</span>
                 <span className="font-medium">₹{subtotal.toFixed(0)}</span>
               </div>
-              <div className="flex items-center justify-between">
-                <span className="text-muted-foreground">Delivery</span>
-                <span className="font-medium">Free</span>
-              </div>
-              <Separator />
-              <div className="flex items-center justify-between">
-                <span className="font-medium">Total</span>
-                <span className="font-bold">₹{subtotal.toFixed(0)}</span>
+              
+              <div className="flex justify-between text-sm text-muted-foreground">
+                <span>Delivery</span>
+                <span>Free</span>
               </div>
               
-              <div className="flex flex-col gap-2">
-                <Button onClick={proceedToCheckout} className="w-full">
-                  Checkout
-                </Button>
-                <Button variant="outline" onClick={clearCart} className="w-full">
-                  Clear Cart
-                </Button>
+              <Separator />
+              
+              <div className="flex justify-between font-medium">
+                <span>Total</span>
+                <span>₹{subtotal.toFixed(0)}</span>
               </div>
+              
+              <Button 
+                className="w-full" 
+                onClick={proceedToCheckout}
+              >
+                Proceed to Checkout
+              </Button>
+              
+              <Button 
+                variant="outline" 
+                className="w-full" 
+                onClick={clearCart}
+              >
+                Clear Cart
+              </Button>
             </div>
           </>
         )}

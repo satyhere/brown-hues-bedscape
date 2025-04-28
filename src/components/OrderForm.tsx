@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { toast } from "sonner";
@@ -8,12 +7,14 @@ import { Textarea } from "./ui/textarea";
 import { Button } from "./ui/button";
 import Map from "./Map";
 import { MapPin } from "lucide-react";
+import { createOrder } from "../integrations/supabase/services";
+import { CartItem } from "../types/bed";
 
 interface OrderFormProps {
   initialSize?: string;
   initialDimension?: string;
   initialTreatment?: string;
-  cartItems?: any[];
+  cartItems?: CartItem[];
   onOrderComplete?: () => void;
 }
 
@@ -54,27 +55,61 @@ const OrderForm = ({
     }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log(formData);
-    toast.success("Order placed successfully! We'll contact you soon for delivery.");
     
-    // Reset the form
-    setFormData({
-      name: "",
-      phone: "",
-      email: "",
-      address: "",
-      size: initialSize,
-      dimension: initialDimension,
-      treatment: initialTreatment,
-      quantity: "1",
-      notes: "",
-    });
-    
-    // Call the callback if provided
-    if (onOrderComplete) {
-      onOrderComplete();
+    try {
+      // Calculate total amount
+      const totalAmount = cartItems.reduce((sum, item) => {
+        return sum + (item.price * item.quantity);
+      }, 0);
+
+      // Create the order
+      const order = {
+        customer_name: formData.name,
+        customer_email: formData.email,
+        customer_phone: formData.phone,
+        delivery_address: formData.address,
+        notes: formData.notes,
+        total_amount: totalAmount,
+        status: 'pending' as const
+      };
+
+      // Create order items
+      const items = cartItems.map(item => ({
+        size: item.size,
+        dimension: item.dimension,
+        treatment: item.treatment,
+        price: item.price,
+        quantity: item.quantity,
+        custom_pallets: item.customPallets ? JSON.stringify(item.customPallets) : null
+      }));
+
+      // Submit the order
+      await createOrder(order, items);
+      
+      toast.success("Order placed successfully! We'll contact you soon for delivery.");
+      
+      // Reset the form
+      setFormData({
+        name: "",
+        phone: "",
+        email: "",
+        address: "",
+        size: initialSize,
+        dimension: initialDimension,
+        treatment: initialTreatment,
+        quantity: "1",
+        notes: "",
+      });
+      
+      // Call the callback if provided
+      if (onOrderComplete) {
+        onOrderComplete();
+      }
+    } catch (error) {
+      console.error('Error submitting order:', error);
+      toast.error("Failed to place order. Please try again.");
     }
   };
 
