@@ -1,11 +1,12 @@
 import React, { createContext, useContext, ReactNode } from 'react'
-import { useCart, Cart, CartItem } from '../hooks/useCart'
+import { useCart, Cart } from '../hooks/useCart'
+import { CartItem } from '../types/bed'
 
 type CartContextType = {
   cart: Cart
   addToCart: (item: CartItem) => void
-  removeFromCart: (itemId: string) => void
-  updateQuantity: (itemId: string, quantity: number) => void
+  removeFromCart: (itemId: string, size?: string, treatment?: string) => void
+  updateQuantity: (itemId: string, quantity: number, size?: string, treatment?: string) => void
   clearCart: () => void
   submitOrder: (customerInfo: {
     name: string

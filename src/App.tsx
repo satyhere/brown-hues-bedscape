@@ -8,26 +8,31 @@ import Index from "./pages/Index";
 import Order from "./pages/Order";
 import NotFound from "./pages/NotFound";
 import { CartProvider } from './contexts/CartContext'
+import { AuthProvider } from './contexts/AuthContext'
+import BlobBackground from "./components/BlobBackground";
 
 const App: React.FC = () => {
   const [queryClient] = useState(() => new QueryClient());
 
   return (
-    <CartProvider>
-      <QueryClientProvider client={queryClient}>
-        <TooltipProvider>
-          <Toaster />
-          <Sonner />
-          <BrowserRouter>
-            <Routes>
-              <Route path="/" element={<Index />} />
-              <Route path="/order" element={<Order />} />
-              <Route path="*" element={<NotFound />} />
-            </Routes>
-          </BrowserRouter>
-        </TooltipProvider>
-      </QueryClientProvider>
-    </CartProvider>
+    <AuthProvider>
+      <CartProvider>
+        <QueryClientProvider client={queryClient}>
+          <TooltipProvider>
+            <BlobBackground />
+            <Toaster />
+            <Sonner />
+            <BrowserRouter>
+              <Routes>
+                <Route path="/" element={<Index />} />
+                <Route path="/order" element={<Order />} />
+                <Route path="*" element={<NotFound />} />
+              </Routes>
+            </BrowserRouter>
+          </TooltipProvider>
+        </QueryClientProvider>
+      </CartProvider>
+    </AuthProvider>
   );
 };
 

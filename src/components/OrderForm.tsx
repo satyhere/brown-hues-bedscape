@@ -21,7 +21,7 @@ interface OrderFormProps {
 const OrderForm = ({ 
   initialSize = "", 
   initialDimension = "", 
-  initialTreatment = "",
+  initialTreatment = "natural",
   cartItems = [],
   onOrderComplete
 }: OrderFormProps) => {
@@ -182,7 +182,7 @@ const OrderForm = ({
 
       {!cartItems || cartItems.length === 0 ? (
         <>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="space-y-2">
               <Label htmlFor="size">Bed Size</Label>
               <Input
@@ -197,15 +197,6 @@ const OrderForm = ({
               <Input
                 id="dimension"
                 value={formData.dimension}
-                readOnly
-                className="glass bg-muted"
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="treatment">Treatment</Label>
-              <Input
-                id="treatment"
-                value={formData.treatment}
                 readOnly
                 className="glass bg-muted"
               />

@@ -15,6 +15,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
 import { CartItem } from "../types/bed";
+import { useCartContext } from "@/contexts/CartContext";
 
 interface CartSidebarProps {
   isOpen?: boolean;
@@ -45,103 +46,36 @@ const getPriceForSize = (size: string): number => {
   }
 };
 
-export const useCart = () => {
-  const [cart, setCart] = useState<CartItem[]>([]);
-  const [isCartOpen, setIsCartOpen] = useState(false);
-  
-  useEffect(() => {
-    // Load cart from localStorage on component mount
-    const savedCart = localStorage.getItem('cart');
-    if (savedCart) {
-      try {
-        setCart(JSON.parse(savedCart));
-      } catch (e) {
-        console.error("Failed to parse cart from localStorage", e);
-      }
-    }
-  }, []);
-  
-  useEffect(() => {
-    // Save cart to localStorage whenever it changes
-    localStorage.setItem('cart', JSON.stringify(cart));
-  }, [cart]);
-  
-  const addToCart = (item: Omit<CartItem, "id">) => {
-    const newItem = {
-      ...item,
-      id: crypto.randomUUID(),
-      price: item.price || getPriceForSize(item.size)
-    };
-    
-    setCart(prevCart => {
-      const updatedCart = [...prevCart, newItem];
-      localStorage.setItem('cart', JSON.stringify(updatedCart));
-      return updatedCart;
-    });
-    
-    setIsCartOpen(true);
-    toast.success("Item added to cart!");
-  };
-  
-  const removeFromCart = (id: string) => {
-    setCart(prevCart => {
-      const updatedCart = prevCart.filter(item => item.id !== id);
-      localStorage.setItem('cart', JSON.stringify(updatedCart));
-      return updatedCart;
-    });
-    toast("Item removed from cart");
-  };
-  
-  const updateQuantity = (id: string, newQuantity: number) => {
-    if (newQuantity < 1) return;
-    setCart(prevCart => {
-      const updatedCart = prevCart.map(item => 
-        item.id === id ? { ...item, quantity: newQuantity } : item
-      );
-      localStorage.setItem('cart', JSON.stringify(updatedCart));
-      return updatedCart;
-    });
-  };
-  
-  const clearCart = () => {
-    setCart([]);
-    localStorage.removeItem('cart');
-  };
-  
-  const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
-  
-  const subtotal = cart.reduce((sum, item) => {
-    return sum + calculateItemPrice(item);
-  }, 0);
-  
-  return {
-    cart,
-    addToCart,
-    removeFromCart,
-    updateQuantity,
-    clearCart,
-    totalItems,
-    subtotal,
-    isCartOpen,
-    setIsCartOpen
-  };
-};
+// Export the existing CartContext's useCartContext as useCart for backward compatibility
+export const useCart = useCartContext;
 
 const CartSidebar = ({ isOpen, onOpenChange }: CartSidebarProps) => {
   const navigate = useNavigate();
+  const [localIsOpen, setLocalIsOpen] = useState(false);
   const { 
     cart, 
     removeFromCart, 
     updateQuantity, 
-    totalItems, 
-    subtotal, 
-    clearCart,
-    isCartOpen,
-    setIsCartOpen
-  } = useCart();
+    clearCart
+  } = useCartContext();
   
+  const totalItems = cart.items.reduce((sum, item) => sum + item.quantity, 0);
+  const subtotal = cart.total;
+
+  const handleQuantityDecrease = (item: CartItem) => {
+    if (item.quantity === 1) {
+      removeFromCart(item.id, item.size, item.treatment);
+    } else {
+      updateQuantity(item.id, item.quantity - 1, item.size, item.treatment);
+    }
+  };
+
+  const handleQuantityIncrease = (item: CartItem) => {
+    updateQuantity(item.id, item.quantity + 1, item.size, item.treatment);
+  };
+
   const proceedToCheckout = () => {
-    if (cart.length === 0) {
+    if (cart.items.length === 0) {
       toast.error("Your cart is empty");
       return;
     }
@@ -149,19 +83,19 @@ const CartSidebar = ({ isOpen, onOpenChange }: CartSidebarProps) => {
     navigate("/order", { 
       state: { 
         fromCart: true,
-        cartItems: cart 
+        cartItems: cart.items 
       } 
     });
     
     if (onOpenChange) {
       onOpenChange(false);
     } else {
-      setIsCartOpen(false);
+      setLocalIsOpen(false);
     }
   };
   
-  const open = isOpen !== undefined ? isOpen : isCartOpen;
-  const setOpen = onOpenChange || setIsCartOpen;
+  const open = isOpen !== undefined ? isOpen : localIsOpen;
+  const setOpen = onOpenChange || setLocalIsOpen;
   
   return (
     <Sheet open={open} onOpenChange={setOpen}>
@@ -183,7 +117,7 @@ const CartSidebar = ({ isOpen, onOpenChange }: CartSidebarProps) => {
           </SheetTitle>
         </SheetHeader>
         
-        {cart.length === 0 ? (
+        {cart.items.length === 0 ? (
           <div className="flex flex-col items-center justify-center h-[60vh]">
             <ShoppingCart className="h-16 w-16 text-muted-foreground mb-4" />
             <p className="text-muted-foreground">Your cart is empty</p>
@@ -195,7 +129,7 @@ const CartSidebar = ({ isOpen, onOpenChange }: CartSidebarProps) => {
           <>
             <div className="flex flex-col gap-4 mt-6 max-h-[60vh] overflow-auto pr-1">
               <AnimatePresence>
-                {cart.map((item) => (
+                {cart.items.map((item) => (
                   <motion.div
                     key={item.id}
                     initial={{ opacity: 0, height: 0 }}
@@ -225,7 +159,7 @@ const CartSidebar = ({ isOpen, onOpenChange }: CartSidebarProps) => {
                       <div className="text-right">
                         <p className="font-medium">₹{calculateItemPrice(item).toFixed(0)}</p>
                         <button 
-                          onClick={() => removeFromCart(item.id)}
+                          onClick={() => removeFromCart(item.id, item.size, item.treatment)}
                           className="text-xs text-destructive hover:underline mt-1"
                         >
                           Remove
@@ -237,7 +171,7 @@ const CartSidebar = ({ isOpen, onOpenChange }: CartSidebarProps) => {
                         variant="ghost" 
                         size="icon" 
                         className="h-8 w-8"
-                        onClick={() => updateQuantity(item.id, item.quantity - 1)}
+                        onClick={() => handleQuantityDecrease(item)}
                       >
                         <Minus className="h-3 w-3" />
                       </Button>
@@ -246,50 +180,46 @@ const CartSidebar = ({ isOpen, onOpenChange }: CartSidebarProps) => {
                         variant="ghost" 
                         size="icon" 
                         className="h-8 w-8"
-                        onClick={() => updateQuantity(item.id, item.quantity + 1)}
+                        onClick={() => handleQuantityIncrease(item)}
                       >
                         <Plus className="h-3 w-3" />
                       </Button>
                     </div>
+                    <Separator />
                   </motion.div>
                 ))}
               </AnimatePresence>
             </div>
             
-            <Separator className="my-4" />
-            
-            <div className="space-y-4">
-              <div className="flex justify-between">
-                <span>Subtotal</span>
-                <span className="font-medium">₹{subtotal.toFixed(0)}</span>
+            <div className="mt-auto pt-4">
+              <div className="space-y-3">
+                <div className="flex justify-between">
+                  <span>Subtotal</span>
+                  <span>₹{subtotal.toFixed(0)}</span>
+                </div>
+                <div className="flex justify-between text-sm text-muted-foreground">
+                  <span>Delivery</span>
+                  <span>Free</span>
+                </div>
+                <Separator />
+                <div className="flex justify-between font-medium">
+                  <span>Total</span>
+                  <span>₹{subtotal.toFixed(0)}</span>
+                </div>
               </div>
               
-              <div className="flex justify-between text-sm text-muted-foreground">
-                <span>Delivery</span>
-                <span>Free</span>
+              <div className="flex flex-col gap-2 mt-4">
+                <Button 
+                  onClick={proceedToCheckout}
+                  className="w-full"
+                >
+                  Checkout
+                </Button>
+                <div className="flex items-center gap-2 justify-center text-sm text-muted-foreground mt-2">
+                  <MapPin className="h-4 w-4" />
+                  <span>Free delivery in Bangalore</span>
+                </div>
               </div>
-              
-              <Separator />
-              
-              <div className="flex justify-between font-medium">
-                <span>Total</span>
-                <span>₹{subtotal.toFixed(0)}</span>
-              </div>
-              
-              <Button 
-                className="w-full" 
-                onClick={proceedToCheckout}
-              >
-                Proceed to Checkout
-              </Button>
-              
-              <Button 
-                variant="outline" 
-                className="w-full" 
-                onClick={clearCart}
-              >
-                Clear Cart
-              </Button>
             </div>
           </>
         )}

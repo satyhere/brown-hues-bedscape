@@ -9,7 +9,7 @@ import Header from "@/components/Header";
 import SizeVisualizer from "@/components/SizeVisualizer";
 import CartSidebar from "@/components/CartSidebar";
 import { useBedConfig } from "@/hooks/useBedConfig";
-import { PRODUCT_SIZES, CONFIGURATION_STEPS, TREATMENT_OPTIONS } from "@/lib/constants";
+import { PRODUCT_SIZES, CONFIGURATION_STEPS } from "@/lib/constants";
 import { SupabaseTest } from '../components/SupabaseTest'
 
 // Types
@@ -29,7 +29,6 @@ const Index = () => {
     handleNext,
     handleSizeSelect,
     handleDimensionSelect,
-    handleTreatmentSelect,
     handleAddToCart
   } = useBedConfig();
 
@@ -94,10 +93,10 @@ const Index = () => {
                   config.currentStep === step.key 
                     ? "bg-primary text-secondary border-primary scale-110 shadow-lg" 
                     : "bg-secondary text-primary border-secondary shadow-none"
-                } ${i !== 2 ? " mr-2" : ""}`}>
+                } ${i !== 1 ? " mr-2" : ""}`}>
                   <span className="text-base md:text-lg font-bold">{i + 1}</span>
                 </div>
-                {i !== 2 && <div className="absolute left-full mx-1 w-4 md:w-6 h-0.5 bg-primary/20" />}
+                {i !== 1 && <div className="absolute left-full mx-1 w-4 md:w-6 h-0.5 bg-primary/20" />}
                 <span className={`ml-2 text-[10px] md:text-xs font-semibold uppercase tracking-wide ${
                   config.currentStep === step.key ? " text-primary" : " text-muted-foreground"
                 }`}>
@@ -206,43 +205,8 @@ const Index = () => {
                 </div>
                 <div className="flex justify-end">
                   <Button
-                    onClick={handleNext}
-                    disabled={!config.selectedDimension}
-                    className="text-sm md:text-base"
-                  >
-                    Next
-                  </Button>
-                </div>
-              </div>
-            )}
-
-            {/* Treatment Selection */}
-            {config.currentStep === "treatment" && (
-              <div className="space-y-4">
-                <h2 className="text-xl md:text-2xl font-bold text-center">Select Treatment</h2>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-3 md:gap-4">
-                  {TREATMENT_OPTIONS.map(treatment => (
-                    <motion.div
-                      key={treatment.value}
-                      whileHover={{ scale: 1.02 }}
-                      whileTap={{ scale: 0.98 }}
-                      className={`p-3 md:p-4 rounded-lg border cursor-pointer ${
-                        config.selectedTreatment === treatment.value
-                          ? "border-primary bg-primary/5"
-                          : "border-border hover:border-primary/50"
-                      }`}
-                      onClick={() => handleTreatmentSelect(treatment.value)}
-                    >
-                      <div className="text-center">
-                        <span className="text-base md:text-lg font-semibold">{treatment.label}</span>
-                      </div>
-                    </motion.div>
-                  ))}
-                </div>
-                <div className="flex justify-end">
-                  <Button
                     onClick={handleAddToCart}
-                    disabled={!config.selectedTreatment}
+                    disabled={!config.selectedDimension}
                     className="text-sm md:text-base"
                   >
                     Add to Cart

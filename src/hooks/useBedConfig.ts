@@ -2,17 +2,16 @@ import { useState } from 'react';
 import { toast } from 'sonner';
 import { BedConfig, Size, Treatment } from '@/types/bed';
 import { PRODUCT_SIZES } from '@/lib/constants';
-import { useCart } from '@/components/CartSidebar';
+import { useCartContext } from '@/contexts/CartContext';
 
 export const useBedConfig = () => {
   const [config, setConfig] = useState<BedConfig>({
     currentStep: 'size',
     selectedSize: '',
-    selectedDimension: '',
-    selectedTreatment: ''
+    selectedDimension: ''
   });
 
-  const { addToCart } = useCart();
+  const { addToCart } = useCartContext();
 
   const getProductData = (size: Size | '') => 
     PRODUCT_SIZES.find(ps => ps.size === size);
@@ -20,8 +19,6 @@ export const useBedConfig = () => {
   const handleNext = () => {
     if (config.currentStep === 'size' && config.selectedSize) {
       setConfig(prev => ({ ...prev, currentStep: 'dimension' }));
-    } else if (config.currentStep === 'dimension' && config.selectedDimension) {
-      setConfig(prev => ({ ...prev, currentStep: 'treatment' }));
     }
   };
 
@@ -29,8 +26,7 @@ export const useBedConfig = () => {
     setConfig({
       currentStep: 'size',
       selectedSize: size,
-      selectedDimension: '',
-      selectedTreatment: ''
+      selectedDimension: ''
     });
   };
 
@@ -41,35 +37,37 @@ export const useBedConfig = () => {
     }));
   };
 
-  const handleTreatmentSelect = (treatment: Treatment) => {
-    setConfig(prev => ({
-      ...prev,
-      selectedTreatment: treatment
-    }));
-  };
-
   const handleAddToCart = () => {
-    if (config.currentStep === 'treatment' && config.selectedTreatment) {
+    if (config.currentStep === 'dimension' && config.selectedDimension) {
       const productData = getProductData(config.selectedSize as Size);
+      const defaultTreatment: Treatment = 'natural';
       
       if (config.selectedSize === 'custom') {
         // For custom sizes
         const customPallets = JSON.parse(localStorage.getItem('customPallets') || '[]');
         
+        // Generate a consistent ID based on product properties
+        const productId = `custom-${defaultTreatment}`;
+        
         addToCart({
+          id: productId,
           size: config.selectedSize,
           dimension: 'Custom',
-          treatment: config.selectedTreatment,
+          treatment: defaultTreatment,
           price: 0, // Will be calculated based on dimensions
           quantity: 1,
           customPallets: customPallets
         });
       } else {
         // For standard sizes
+        // Generate a consistent ID based on product properties
+        const productId = `${config.selectedSize}-${config.selectedDimension}-${defaultTreatment}`;
+        
         addToCart({
+          id: productId,
           size: config.selectedSize as Size,
           dimension: config.selectedDimension,
-          treatment: config.selectedTreatment,
+          treatment: defaultTreatment,
           price: productData?.price || 0,
           quantity: 1
         });
@@ -81,8 +79,7 @@ export const useBedConfig = () => {
       setConfig({
         currentStep: 'size',
         selectedSize: '',
-        selectedDimension: '',
-        selectedTreatment: ''
+        selectedDimension: ''
       });
     }
   };
@@ -92,7 +89,6 @@ export const useBedConfig = () => {
     handleNext,
     handleSizeSelect,
     handleDimensionSelect,
-    handleTreatmentSelect,
     handleAddToCart
   };
 }; 

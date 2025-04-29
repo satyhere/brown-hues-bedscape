@@ -26,8 +26,7 @@ export interface CartItem {
 }
 
 export interface BedConfig {
-  currentStep: 'size' | 'dimension' | 'treatment';
+  currentStep: 'size' | 'dimension';
   selectedSize: Size | '';
   selectedDimension: string;
-  selectedTreatment: Treatment | '';
 } 

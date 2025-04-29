@@ -35,12 +35,5 @@ export const PRODUCT_SIZES: ProductSize[] = [
 
 export const CONFIGURATION_STEPS = [
   { key: "size", label: "Select Size" },
-  { key: "dimension", label: "Select Dimension" },
-  { key: "treatment", label: "Select Treatment" }
-] as const;
-
-export const TREATMENT_OPTIONS = [
-  { value: 'natural', label: 'Natural Finish' },
-  { value: 'polished', label: 'Polished Finish' },
-  { value: 'stained', label: 'Stained Finish' }
+  { key: "dimension", label: "Select Dimension" }
 ] as const; 
