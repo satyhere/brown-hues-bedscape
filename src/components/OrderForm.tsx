@@ -7,8 +7,9 @@ import { Textarea } from "./ui/textarea";
 import { Button } from "./ui/button";
 import Map from "./Map";
 import { MapPin } from "lucide-react";
-import { createOrder } from "../integrations/supabase/services";
+import { createGuestOrderWithProfile } from "../integrations/supabase/services";
 import { CartItem } from "../types/bed";
+import { useAuth } from "../contexts/AuthContext";
 
 interface OrderFormProps {
   initialSize?: string;
@@ -25,6 +26,7 @@ const OrderForm = ({
   cartItems = [],
   onOrderComplete
 }: OrderFormProps) => {
+  const { user } = useAuth();
   const [formData, setFormData] = useState({
     name: "",
     phone: "",
@@ -48,6 +50,16 @@ const OrderForm = ({
     }));
   }, [initialSize, initialDimension, initialTreatment]);
 
+  // Pre-fill form with user data if available
+  useEffect(() => {
+    if (user) {
+      setFormData(prev => ({
+        ...prev,
+        email: user.email || ""
+      }));
+    }
+  }, [user]);
+
   const handleAddressSelected = (address: string) => {
     setFormData(prev => ({
       ...prev,
@@ -67,7 +79,7 @@ const OrderForm = ({
       // Create the order
       const order = {
         customer_name: formData.name,
-        customer_email: formData.email,
+        customer_email: user?.email || formData.email,
         customer_phone: formData.phone,
         delivery_address: formData.address,
         notes: formData.notes,
@@ -85,8 +97,8 @@ const OrderForm = ({
         custom_pallets: item.customPallets ? JSON.stringify(item.customPallets) : null
       }));
 
-      // Submit the order
-      await createOrder(order, items);
+      // Submit the order with profile creation
+      await createGuestOrderWithProfile(order, items);
       
       toast.success("Order placed successfully! We'll contact you soon for delivery.");
       
@@ -94,7 +106,7 @@ const OrderForm = ({
       setFormData({
         name: "",
         phone: "",
-        email: "",
+        email: user?.email || "",
         address: "",
         size: initialSize,
         dimension: initialDimension,

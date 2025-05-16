@@ -79,6 +79,38 @@ export type Database = {
           custom_pallets?: Json | null
         }
       }
+      profiles: {
+        Row: {
+          id: string
+          created_at: string
+          updated_at: string
+          name: string | null
+          email: string
+          phone: string | null
+          address: string | null
+          orders_count: number
+        }
+        Insert: {
+          id: string
+          created_at?: string
+          updated_at?: string
+          name?: string | null
+          email: string
+          phone?: string | null
+          address?: string | null
+          orders_count?: number
+        }
+        Update: {
+          id?: string
+          created_at?: string
+          updated_at?: string
+          name?: string | null
+          email?: string
+          phone?: string | null
+          address?: string | null
+          orders_count?: number
+        }
+      }
     }
     Views: {
       [_ in never]: never

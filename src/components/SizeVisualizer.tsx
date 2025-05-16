@@ -68,25 +68,7 @@ const SizeVisualizer = ({ selectedSize }: SizeVisualizerProps) => {
               {selectedSize === "custom" ? "Customize Your Pallets" : `Visualize Your ${selectedSize} Bed`}
             </motion.h3>
             
-            {selectedSize === "double" ? (
-              <motion.div 
-                initial={{ opacity: 0, scale: 0.95 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ delay: 0.2 }}
-                className="relative w-full flex flex-col items-center justify-center"
-              >
-                <div className="w-full max-h-[250px] sm:max-h-[300px] md:max-h-[350px] flex items-center justify-center">
-                  <img
-                    src="/lovable-uploads/4cf8207a-4832-4929-8a39-4e78ee9bb833.png"
-                    alt="Double Bed Pallet"
-                    className="w-full h-auto max-h-full object-contain"
-                  />
-                </div>
-                <div className="glass px-3 py-1 rounded-full text-xs sm:text-sm mt-4">
-                  72" × 48"
-                </div>
-              </motion.div>
-            ) : selectedSize === "custom" ? (
+            {selectedSize === "custom" ? (
               <motion.div 
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
@@ -184,7 +166,26 @@ const SizeVisualizer = ({ selectedSize }: SizeVisualizerProps) => {
                 transition={{ delay: 0.2 }}
                 className="text-muted-foreground"
               >
-                Select "Double Bed" to view the product image or "Custom" for multiple pallets
+                <motion.div 
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: 0.2 }}
+                className="relative w-full flex flex-col items-center justify-center"
+              >
+                <div className="w-full max-h-[250px] sm:max-h-[300px] md:max-h-[350px] flex items-center justify-center">
+                  <img
+                    src="/lovable-uploads/4cf8207a-4832-4929-8a39-4e78ee9bb833.png"
+                    alt="Bed Pallet"
+                    className="w-full h-auto max-h-full object-contain"
+                  />
+                </div>
+                <div className="glass px-3 py-1 rounded-full text-xs sm:text-sm mt-4">
+                  {selectedSize === 'single' ? '72" × 36"' : 
+                   selectedSize === 'double' ? '72" × 48"' :
+                   selectedSize === 'queen' ? '60" × 72"' :
+                   selectedSize === 'king' ? '72" × 72"' : 'Custom Size'}
+                </div>
+              </motion.div>
               </motion.div>
             )}
           </motion.div>

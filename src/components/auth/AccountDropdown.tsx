@@ -1,4 +1,5 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { 
   DropdownMenu,
   DropdownMenuContent,
@@ -10,9 +11,10 @@ import {
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/contexts/AuthContext';
 import { toast } from 'sonner';
-import { User, LogOut, Settings } from 'lucide-react';
+import { User, LogOut, UserCircle } from 'lucide-react';
 
 const AccountDropdown: React.FC = () => {
+  const navigate = useNavigate();
   const { user, signOut } = useAuth();
   
   const handleSignOut = async () => {
@@ -49,10 +51,10 @@ const AccountDropdown: React.FC = () => {
         <DropdownMenuSeparator />
         <DropdownMenuItem 
           className="cursor-pointer flex items-center gap-2" 
-          onClick={() => toast.info('Account settings will be implemented soon')}
+          onClick={() => navigate('/profile')}
         >
-          <Settings className="h-4 w-4" />
-          <span>Account settings</span>
+          <UserCircle className="h-4 w-4" />
+          <span>Your Profile</span>
         </DropdownMenuItem>
         <DropdownMenuItem 
           className="cursor-pointer flex items-center gap-2 text-destructive focus:text-destructive" 

@@ -10,7 +10,7 @@ import SizeVisualizer from "@/components/SizeVisualizer";
 import CartSidebar from "@/components/CartSidebar";
 import { useBedConfig } from "@/hooks/useBedConfig";
 import { PRODUCT_SIZES, CONFIGURATION_STEPS } from "@/lib/constants";
-import { SupabaseTest } from '../components/SupabaseTest'
+
 
 // Types
 type Size = 'single' | 'double' | 'queen' | 'king' | 'custom';
@@ -308,7 +308,6 @@ const Index = () => {
       </footer>
 
       <main>
-        <SupabaseTest />
       </main>
     </div>
   );
