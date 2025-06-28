@@ -198,8 +198,8 @@ const CartSidebar = ({ isOpen, onOpenChange }: CartSidebarProps) => {
                   <span>₹{subtotal.toFixed(0)}</span>
                 </div>
                 <div className="flex justify-between text-sm text-muted-foreground">
-                  <span>Delivery</span>
-                  <span>Free</span>
+                  <span>Shipping</span>
+                  <span>Calculated at checkout</span>
                 </div>
                 <Separator />
                 <div className="flex justify-between font-medium">
@@ -215,9 +215,9 @@ const CartSidebar = ({ isOpen, onOpenChange }: CartSidebarProps) => {
                 >
                   Checkout
                 </Button>
-                <div className="flex items-center gap-2 justify-center text-sm text-muted-foreground mt-2">
+                <div className="flex items-center gap-2 justify-center text-xs text-muted-foreground mt-2">
                   <MapPin className="h-4 w-4" />
-                  <span>Free delivery in Bangalore</span>
+                  <span>Shipping charges (if any) will be calculated after you enter your address at checkout.</span>
                 </div>
               </div>
             </div>

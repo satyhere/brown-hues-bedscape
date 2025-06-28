@@ -7,6 +7,8 @@ import { PlusCircle, Trash } from "lucide-react";
 
 interface SizeVisualizerProps {
   selectedSize: string;
+  currentStep?: string;
+  selectedDimension?: string;
 }
 
 interface CustomPalletSize {
@@ -15,7 +17,7 @@ interface CustomPalletSize {
   quantity: string;
 }
 
-const SizeVisualizer = ({ selectedSize }: SizeVisualizerProps) => {
+const SizeVisualizer = ({ selectedSize, currentStep, selectedDimension }: SizeVisualizerProps) => {
   const ref = useRef<HTMLDivElement>(null);
   const { scrollYProgress } = useScroll({
     target: ref,
@@ -52,7 +54,7 @@ const SizeVisualizer = ({ selectedSize }: SizeVisualizerProps) => {
         animate={{ opacity: 1, y: 0 }}
         exit={{ opacity: 0, y: 20 }}
         transition={{ duration: 0.3, ease: "easeOut" }}
-        className="py-12 px-4 min-h-[60vh] flex items-center justify-center"
+        className="py-4 md:py-12 px-4 flex items-center justify-center"
       >
         <div className="container mx-auto text-center">
           <motion.div
@@ -81,9 +83,9 @@ const SizeVisualizer = ({ selectedSize }: SizeVisualizerProps) => {
                     initial={{ opacity: 0, x: -20 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: 0.1 * index }}
-                    className="grid grid-cols-10 gap-2 items-center"
+                    className="flex flex-col gap-2 w-full sm:grid sm:grid-cols-10 sm:gap-2 sm:items-center"
                   >
-                    <div className="col-span-3">
+                    <div className="sm:col-span-3 w-full">
                       <Label htmlFor={`width-${index}`} className="text-xs text-left block mb-1">Width (inches)</Label>
                       <Input 
                         id={`width-${index}`}
@@ -95,7 +97,7 @@ const SizeVisualizer = ({ selectedSize }: SizeVisualizerProps) => {
                         className="h-8"
                       />
                     </div>
-                    <div className="col-span-3">
+                    <div className="sm:col-span-3 w-full">
                       <Label htmlFor={`length-${index}`} className="text-xs text-left block mb-1">Length (inches)</Label>
                       <Input 
                         id={`length-${index}`}
@@ -107,7 +109,7 @@ const SizeVisualizer = ({ selectedSize }: SizeVisualizerProps) => {
                         className="h-8"
                       />
                     </div>
-                    <div className="col-span-3">
+                    <div className="sm:col-span-3 w-full">
                       <Label htmlFor={`quantity-${index}`} className="text-xs text-left block mb-1">Quantity</Label>
                       <Input 
                         id={`quantity-${index}`}
@@ -118,7 +120,7 @@ const SizeVisualizer = ({ selectedSize }: SizeVisualizerProps) => {
                         className="h-8"
                       />
                     </div>
-                    <div className="col-span-1 pt-6">
+                    <div className="w-full flex justify-end sm:col-span-1 pt-2 sm:pt-6">
                       <Button 
                         variant="ghost" 
                         size="icon"
@@ -179,12 +181,17 @@ const SizeVisualizer = ({ selectedSize }: SizeVisualizerProps) => {
                     className="w-full h-auto max-h-full object-contain"
                   />
                 </div>
-                <div className="glass px-3 py-1 rounded-full text-xs sm:text-sm mt-4">
-                  {selectedSize === 'single' ? '72" × 36"' : 
-                   selectedSize === 'double' ? '72" × 48"' :
-                   selectedSize === 'queen' ? '60" × 72"' :
-                   selectedSize === 'king' ? '72" × 72"' : 'Custom Size'}
-                </div>
+                {currentStep === 'dimension' && (
+                  <div className="glass px-3 py-1 rounded-full text-xs sm:text-sm mt-4">
+                    {selectedDimension
+                      ? `${selectedDimension.replace('x', '×').replace(/\s/g, '')}\"`
+                      : selectedSize === 'single' ? '72" × 36"'
+                      : selectedSize === 'double' ? '72" × 48"'
+                      : selectedSize === 'queen' ? '60" × 72"'
+                      : selectedSize === 'king' ? '72" × 72"'
+                      : 'Custom Size'}
+                  </div>
+                )}
               </motion.div>
               </motion.div>
             )}

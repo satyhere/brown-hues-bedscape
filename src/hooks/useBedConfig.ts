@@ -22,7 +22,7 @@ export const useBedConfig = () => {
     }
   };
 
-  const handleSizeSelect = (size: Size) => {
+  const handleSizeSelect = (size: Size | '') => {
     setConfig({
       currentStep: 'size',
       selectedSize: size,

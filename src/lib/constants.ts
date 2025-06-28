@@ -35,5 +35,8 @@ export const PRODUCT_SIZES: ProductSize[] = [
 
 export const CONFIGURATION_STEPS = [
   { key: "size", label: "Select Size" },
-  { key: "dimension", label: "Select Dimension" }
-] as const; 
+  { key: "dimension", label: "Select Dimension" },
+  { key: "add", label: "Add to Cart" }
+] as const;
+
+export type ConfigStep = typeof CONFIGURATION_STEPS[number]["key"];

@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { toast } from "sonner";
 import { Input } from "./ui/input";
+import { GooglePlacesAutocomplete } from "./GooglePlacesAutocomplete";
 import { Label } from "./ui/label";
 import { Textarea } from "./ui/textarea";
 import { Button } from "./ui/button";
@@ -32,6 +33,7 @@ const OrderForm = ({
     phone: "",
     email: "",
     address: "",
+    pincode: "",
     size: initialSize,
     dimension: initialDimension,
     treatment: initialTreatment,
@@ -39,7 +41,7 @@ const OrderForm = ({
     notes: "",
   });
 
-  const [useMap, setUseMap] = useState(false);
+  
 
   useEffect(() => {
     setFormData(prev => ({ 
@@ -169,27 +171,64 @@ const OrderForm = ({
       <div className="space-y-2">
         <div className="flex items-center justify-between">
           <Label htmlFor="address">Delivery Address</Label>
-          <button 
-            type="button"
-            className="text-xs text-primary hover:underline flex items-center"
-            onClick={() => setUseMap(!useMap)}
-          >
-            <MapPin className="h-3 w-3 mr-1" />
-            {useMap ? "Hide map" : "Use map"}
-          </button>
+          <div className="flex">
+            <button
+              type="button"
+              className="text-xs text-primary hover:underline flex items-center ml-auto"
+              onClick={async () => {
+                if (navigator.geolocation) {
+                  navigator.geolocation.getCurrentPosition(async (position) => {
+                    const { latitude, longitude } = position.coords;
+                    // Use a free reverse geocoding API (e.g., Nominatim)
+                    const res = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}`);
+                    const data = await res.json();
+                    setFormData(prev => ({
+                      ...prev,
+                      address: data.display_name || prev.address
+                    }));
+                  }, () => {
+                    toast.error('Unable to detect location.');
+                  });
+                } else {
+                  toast.error('Geolocation is not supported.');
+                }
+              }}
+            >
+              <MapPin className="h-3 w-3 mr-1" />
+              Detect Location
+            </button>
+          </div>
         </div>
-        
-        {useMap ? (
-          <Map onAddressSelected={handleAddressSelected} />
-        ) : (
-          <Textarea
-            id="address"
-            value={formData.address}
-            onChange={(e) => setFormData({ ...formData, address: e.target.value })}
+        <GooglePlacesAutocomplete
+          value={formData.address}
+          onChange={(val, pincode) => {
+            setFormData(prev => ({
+              ...prev,
+              address: val,
+              pincode: pincode || prev.pincode
+            }));
+          }}
+          placeholder="Start typing your address..."
+          className="glass w-full px-3 py-2 rounded-md border border-input focus:outline-none focus:ring-2 focus:ring-primary"
+        />
+        <div className="space-y-1 mt-2">
+          <Label htmlFor="pincode">Pin Code</Label>
+          <Input
+            id="pincode"
+            maxLength={6}
+            pattern="[0-9]{6}"
+            value={formData.pincode || ""}
+            onChange={e => {
+              const value = e.target.value.replace(/\D/g, '').slice(0, 6);
+              setFormData(prev => ({ ...prev, pincode: value }));
+            }}
             className="glass"
             required
           />
-        )}
+          {formData.pincode && formData.pincode.startsWith('56') && (
+            <div className="text-xs text-primary mt-1">Estimated shipping: ₹600–700 (Bangalore region)</div>
+          )}
+        </div>
       </div>
 
       {!cartItems || cartItems.length === 0 ? (

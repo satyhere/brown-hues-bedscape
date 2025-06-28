@@ -1,16 +1,17 @@
 import { useState } from "react";
-import { motion } from "framer-motion";
-import { MapPin, Truck, Shield, CheckCircle2 } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+import { MapPin, Truck, Shield, CheckCircle2, ChevronLeft, ShoppingCart, ChevronRight } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import TestimonialSection from "@/components/TestimonialSection";
+import InstagramSection from "@/components/InstagramSection";
 import Header from "@/components/Header";
 import SizeVisualizer from "@/components/SizeVisualizer";
 import CartSidebar from "@/components/CartSidebar";
+import Chatbot from "@/components/Chatbot";
 import { useBedConfig } from "@/hooks/useBedConfig";
-import { PRODUCT_SIZES, CONFIGURATION_STEPS } from "@/lib/constants";
-
+import { PRODUCT_SIZES, CONFIGURATION_STEPS, ConfigStep } from "@/lib/constants";
 
 // Types
 type Size = 'single' | 'double' | 'queen' | 'king' | 'custom';
@@ -32,6 +33,11 @@ const Index = () => {
     handleAddToCart
   } = useBedConfig();
 
+  // Helper for stepper logic
+  const getStepIndex = (step: ConfigStep) => CONFIGURATION_STEPS.findIndex(s => s.key === step);
+  const currentStepIndex = getStepIndex(config.currentStep as ConfigStep);
+
+
   // Helper functions
   const getProductData = (size: Size | "") => PRODUCT_SIZES.find(ps => ps.size === size);
   
@@ -40,9 +46,12 @@ const Index = () => {
       <Header />
       
       {/* Hero Section */}
-      <section className="relative min-h-[45vh] md:min-h-[50vh] hero-gradient px-2 py-2 md:py-4 pt-16 md:pt-24" style={{
-        paddingBottom: 0
-      }}>
+      <section 
+        className={`relative hero-gradient px-2 py-2 md:py-2 pt-12 md:pt-16`}
+        style={{
+          paddingBottom: 0
+        }}
+      >
         <motion.div 
           initial={{ opacity: 0, y: 18 }}
           animate={{ opacity: 1, y: 0 }}
@@ -53,7 +62,7 @@ const Index = () => {
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.2 }}
-            className="glass px-3 py-1 rounded-full text-xs md:text-sm font-medium mb-3 md:mb-4 inline-block tracking-wide shadow-sm"
+            className="glass px-3 py-1 rounded-full text-xs md:text-sm font-medium mb-3 md:mb-4 mt-5 md:mt-8 inline-block tracking-wide shadow-sm"
           >
             Premium Bed Pallets in Bangalore
           </motion.span>
@@ -79,39 +88,65 @@ const Index = () => {
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.5 }}
-            className="flex flex-wrap justify-center items-center gap-2 mb-0 mt-6 md:mt-8 px-2"
+            className="flex flex-wrap justify-center items-center gap-2 mb-0.5 mt-0.5 md:mt-1 px-2"
           >
-            {CONFIGURATION_STEPS.map((step, i) => (
-              <motion.div 
-                key={step.key} 
-                className={`flex items-center ${i !== 0 ? "ml-2 md:ml-4" : ""}`}
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: i * 0.17 }}
-              >
-                <div className={`relative flex items-center justify-center w-8 h-8 md:w-9 md:h-9 rounded-full border-2 ${
-                  config.currentStep === step.key 
-                    ? "bg-primary text-secondary border-primary scale-110 shadow-lg" 
-                    : "bg-secondary text-primary border-secondary shadow-none"
-                } ${i !== 1 ? " mr-2" : ""}`}>
-                  <span className="text-base md:text-lg font-bold">{i + 1}</span>
-                </div>
-                {i !== 1 && <div className="absolute left-full mx-1 w-4 md:w-6 h-0.5 bg-primary/20" />}
-                <span className={`ml-2 text-[10px] md:text-xs font-semibold uppercase tracking-wide ${
-                  config.currentStep === step.key ? " text-primary" : " text-muted-foreground"
-                }`}>
-                  {step.label}
-                </span>
-              </motion.div>
-            ))}
+            {CONFIGURATION_STEPS.map((step, i) => {
+  const isActive = i === currentStepIndex;
+  const isCompleted = i < currentStepIndex;
+  return (
+    <motion.div
+      key={step.key}
+      className={`flex items-center relative ${i !== 0 ? "ml-2 md:ml-4" : ""}`}
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ delay: i * 0.17 }}
+    >
+      <div
+        className={`relative flex items-center justify-center w-8 h-8 md:w-9 md:h-9 rounded-full border-2 transition-all duration-200
+          ${isActive ? "bg-primary text-secondary border-primary scale-110 shadow-lg ring-4 ring-primary/30" :
+            isCompleted ? "bg-success/90 text-white border-success scale-100 shadow-md" :
+            "bg-secondary text-primary border-secondary shadow-none"}
+        `}
+        style={isActive ? { boxShadow: "0 0 0 6px rgba(180,150,125,0.08)" } : {}}
+      >
+        {isCompleted ? (
+          <CheckCircle2 className="w-5 h-5 md:w-6 md:h-6 text-success" />
+        ) : (
+          <span className="text-base md:text-lg font-bold">{i + 1}</span>
+        )}
+      </div>
+      {i < CONFIGURATION_STEPS.length - 1 && (
+        <div className={`absolute left-full mx-1 w-2 md:w-6 h-0.5 ${isCompleted ? "bg-success/60" : "bg-primary/20"}`} />
+      )}
+      <span className={`ml-2 text-[8px] md:text-xs font-semibold uppercase tracking-wide transition-colors duration-200
+        ${isActive ? "text-primary drop-shadow-sm" : isCompleted ? "text-success" : "text-muted-foreground"}
+      `}>
+        {step.label}
+      </span>
+    </motion.div>
+  );
+})}
+
+
           </motion.div>
         </motion.div>
       </section>
 
       {/* Size Visualizer */}
-      {config.selectedSize && (
-        <SizeVisualizer selectedSize={config.selectedSize} />
-      )}
+      <AnimatePresence>
+        {config.selectedSize && (
+          <motion.div
+            key="visualizer"
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: 'auto', opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{ duration: 0.5, ease: 'easeInOut' }}
+            className="overflow-hidden"
+          >
+            <SizeVisualizer selectedSize={config.selectedSize} currentStep={config.currentStep} selectedDimension={config.selectedDimension} />
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* Configurator Section */}
       <section className="py-4 md:py-6 px-2 md:px-4" id="configurator">
@@ -167,14 +202,32 @@ const Index = () => {
                     </motion.div>
                   ))}
                 </div>
-                <div className="mt-2 md:mt-4 flex justify-end">
-                  <Button 
-                    className="h-8 md:h-9 px-3 py-2 text-sm md:text-base" 
-                    onClick={handleNext}
-                    disabled={!config.selectedSize}
-                  >
-                    Next
-                  </Button>
+                {/* Step Navigation Buttons */}
+                <div className="flex items-center gap-2 mt-4 mb-2 w-full justify-center">
+                  {config.currentStep === "size" && (
+                    <Button
+                      className="h-12 md:h-14 px-6 py-3 text-base md:text-lg font-semibold rounded-xl bg-primary text-white shadow-xl transition-all duration-200 flex items-center justify-center gap-2 relative group animate-pulse-once"
+                      onClick={handleNext}
+                      disabled={!config.selectedSize}
+                      style={{
+                        boxShadow: config.selectedSize ? "0 6px 32px 0 rgba(180,150,125,0.13)" : undefined,
+                        opacity: config.selectedSize ? 1 : 0.6,
+                        pointerEvents: config.selectedSize ? 'auto' : 'none'
+                      }}
+                    >
+                      Next
+                      <span className="inline-flex items-center ml-2">
+                        <ChevronRight className="w-5 h-5" />
+                      </span>
+                      {config.selectedSize && (
+                        <div className="absolute -bottom-8 left-0 right-0 flex justify-center">
+                        <span className="text-xs md:text-sm text-primary/80 bg-white/90 px-2 py-1 rounded-lg shadow-md animate-fade-in">
+                          Continue to select dimensions
+                        </span>
+                        </div>
+                      )}
+                    </Button>
+                  )}
                 </div>
               </>
             )}
@@ -203,14 +256,46 @@ const Index = () => {
                     </motion.div>
                   ))}
                 </div>
-                <div className="flex justify-end">
-                  <Button
-                    onClick={handleAddToCart}
-                    disabled={!config.selectedDimension}
-                    className="text-sm md:text-base"
+                {/* Step Navigation Buttons */}
+                <div className="flex items-center gap-2 mt-4 mb-2 w-full justify-center">
+                  {/* Show Back Arrow only after first step */}
+                  <button
+                    type="button"
+                    aria-label="Go back"
+                    className="flex items-center justify-center rounded-full p-2 bg-gray-200 hover:bg-primary/10 text-primary transition-all focus:outline-none"
+                    onClick={() => {
+                      // Move to previous step
+                      if (config.currentStep === "dimension") {
+                        handleSizeSelect("");
+                      }
+                    }}
                   >
-                    Add to Cart
-                  </Button>
+                    <ChevronLeft className="w-5 h-5" />
+                  </button>
+                  {config.currentStep === "dimension" && (
+                    <Button
+                      className="h-12 md:h-14 px-6 py-3 text-base md:text-lg font-semibold rounded-xl bg-primary text-white shadow-xl transition-all duration-200 flex items-center justify-center gap-2 relative group animate-pulse-once"
+                      onClick={handleAddToCart}
+                      disabled={!config.selectedDimension}
+                      style={{
+                        boxShadow: config.selectedDimension ? "0 6px 32px 0 rgba(180,150,125,0.13)" : undefined,
+                        opacity: config.selectedDimension ? 1 : 0.6,
+                        pointerEvents: config.selectedDimension ? 'auto' : 'none'
+                      }}
+                    >
+                      Add to Cart
+                      <span className="inline-flex items-center ml-2">
+                        <ShoppingCart className="w-5 h-5" />
+                      </span>
+                      {config.selectedDimension && (
+                        <div className="absolute -bottom-8 left-0 right-0 flex justify-center">
+                          <span className="text-xs md:text-sm text-primary/80 bg-white/90 px-2 py-1 rounded-lg shadow-md animate-fade-in">
+                            Finalize your purchase
+                          </span>
+                        </div>
+                      )}
+                    </Button>
+                  )}
                 </div>
               </div>
             )}
@@ -269,6 +354,9 @@ const Index = () => {
         <TestimonialSection />
       </section>
 
+      {/* Instagram Section */}
+      <InstagramSection />
+
       {/* Contact Section */}
       <section className="py-6 md:py-8 px-2 md:px-4 glass mt-4 md:mt-5" id="contact">
         <div className="container mx-auto max-w-4xl">
@@ -283,21 +371,7 @@ const Index = () => {
               <p className="text-sm md:text-base mb-2"><strong>Phone:</strong> +91 9876543210</p>
               <p className="text-sm md:text-base"><strong>Address:</strong> Koramangala, Bangalore - 560034</p>
             </div>
-            <div className="glass p-4 md:p-6 rounded-xl">
-              <h3 className="text-base md:text-lg font-semibold mb-2 md:mb-3">Send Us a Message</h3>
-              <form className="space-y-2 md:space-y-3">
-                <div>
-                  <input type="text" placeholder="Your Name" className="w-full p-2 md:p-3 glass rounded-md text-sm md:text-base" />
-                </div>
-                <div>
-                  <input type="email" placeholder="Your Email" className="w-full p-2 md:p-3 glass rounded-md text-sm md:text-base" />
-                </div>
-                <div>
-                  <textarea placeholder="Your Message" className="w-full p-2 md:p-3 glass rounded-md text-sm md:text-base" rows={4}></textarea>
-                </div>
-                <Button className="w-full text-sm md:text-base">Send Message</Button>
-              </form>
-            </div>
+            
           </div>
         </div>
       </section>
@@ -309,6 +383,7 @@ const Index = () => {
 
       <main>
       </main>
+      <Chatbot />
     </div>
   );
 };
