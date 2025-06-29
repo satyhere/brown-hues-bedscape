@@ -12,6 +12,7 @@ import CartSidebar from "@/components/CartSidebar";
 import Chatbot from "@/components/Chatbot";
 import { useBedConfig } from "@/hooks/useBedConfig";
 import { PRODUCT_SIZES, CONFIGURATION_STEPS, ConfigStep } from "@/lib/constants";
+import { useCartContext } from "@/contexts/CartContext";
 
 // Types
 type Size = 'single' | 'double' | 'queen' | 'king' | 'custom';
@@ -25,13 +26,18 @@ interface ProductSize {
 
 const Index = () => {
   const navigate = useNavigate();
+  const { openCart } = useCartContext();
   const {
     config,
     handleNext,
     handleSizeSelect,
     handleDimensionSelect,
-    handleAddToCart
+    handleAddToCart: addToCart
   } = useBedConfig();
+
+  const handleAddToCart = () => {
+    addToCart(openCart);
+  };
 
   // Helper for stepper logic
   const getStepIndex = (step: ConfigStep) => CONFIGURATION_STEPS.findIndex(s => s.key === step);

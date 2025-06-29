@@ -11,6 +11,8 @@ import { MapPin } from "lucide-react";
 import { createGuestOrderWithProfile } from "../integrations/supabase/services";
 import { CartItem } from "../types/bed";
 import { useAuth } from "../contexts/AuthContext";
+import { ThankYouPopup } from './ThankYouPopup';
+import { useNavigate } from "react-router-dom";
 
 interface OrderFormProps {
   initialSize?: string;
@@ -28,18 +30,26 @@ const OrderForm = ({
   onOrderComplete
 }: OrderFormProps) => {
   const { user } = useAuth();
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showThankYou, setShowThankYou] = useState(false);
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     name: "",
     phone: "",
     email: "",
     address: "",
     pincode: "",
+    flatHouseNumber: "",
+    floor: "",
     size: initialSize,
     dimension: initialDimension,
     treatment: initialTreatment,
     quantity: "1",
     notes: "",
   });
+
+  // Calculate shipping cost based on pincode (example: 56 is Bangalore)
+  const shippingCost = formData.pincode?.startsWith('56') ? 650 : 0; // Default shipping cost for Bangalore
 
   
 
@@ -73,17 +83,17 @@ const OrderForm = ({
     e.preventDefault();
     
     try {
-      // Calculate total amount
+      // Calculate total amount including shipping
       const totalAmount = cartItems.reduce((sum, item) => {
         return sum + (item.price * item.quantity);
-      }, 0);
+      }, 0) + (shippingCost || 0);
 
       // Create the order
       const order = {
         customer_name: formData.name,
         customer_email: user?.email || formData.email,
         customer_phone: formData.phone,
-        delivery_address: formData.address,
+        delivery_address: `${formData.flatHouseNumber}${formData.floor ? `, ${formData.floor}` : ''}, ${formData.address}`.replace(/\s*,\s*$/, ''),
         notes: formData.notes,
         total_amount: totalAmount,
         status: 'pending' as const
@@ -104,12 +114,18 @@ const OrderForm = ({
       
       toast.success("Order placed successfully! We'll contact you soon for delivery.");
       
+      // Show thank you popup
+      setShowThankYou(true);
+      
       // Reset the form
       setFormData({
         name: "",
         phone: "",
         email: user?.email || "",
         address: "",
+        pincode: "",
+        flatHouseNumber: "",
+        floor: "",
         size: initialSize,
         dimension: initialDimension,
         treatment: initialTreatment,
@@ -127,36 +143,45 @@ const OrderForm = ({
     }
   };
 
+  const handleCloseThankYou = () => {
+    setShowThankYou(false);
+    navigate("/");
+  };
+
   return (
-    <motion.form
-      initial={{ opacity: 0, y: 20 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      className="glass p-8 rounded-xl space-y-6"
-      onSubmit={handleSubmit}
-    >
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div className="space-y-2">
-          <Label htmlFor="name">Name</Label>
-          <Input
-            id="name"
-            value={formData.name}
-            onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-            className="glass"
-            required
-          />
-        </div>
-        <div className="space-y-2">
-          <Label htmlFor="phone">Phone</Label>
-          <Input
-            id="phone"
-            value={formData.phone}
-            onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-            className="glass"
-            required
-          />
-        </div>
+    <>
+      <ThankYouPopup isOpen={showThankYou} onClose={handleCloseThankYou} />
+      <motion.form
+        initial={{ opacity: 0, y: 20 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        className="glass p-8 rounded-xl space-y-6 relative"
+        onSubmit={handleSubmit}
+      >
+      {/* Name */}
+      <div className="space-y-2">
+        <Label htmlFor="name">Name *</Label>
+        <Input
+          id="name"
+          value={formData.name}
+          onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+          className="glass"
+          required
+        />
       </div>
 
+      {/* Phone */}
+      <div className="space-y-2">
+        <Label htmlFor="phone">Phone *</Label>
+        <Input
+          id="phone"
+          value={formData.phone}
+          onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+          className="glass"
+          required
+        />
+      </div>
+
+      {/* Email */}
       <div className="space-y-2">
         <Label htmlFor="email">Email</Label>
         <Input
@@ -168,36 +193,59 @@ const OrderForm = ({
         />
       </div>
 
+      {/* Flat/House Number */}
+      <div className="space-y-2">
+        <Label htmlFor="flatHouseNumber">Flat/House Number *</Label>
+        <Input
+          id="flatHouseNumber"
+          value={formData.flatHouseNumber}
+          onChange={(e) => setFormData({ ...formData, flatHouseNumber: e.target.value })}
+          className="glass"
+          required
+          placeholder="e.g., 101, A Wing"
+        />
+      </div>
+
+      {/* Floor */}
+      <div className="space-y-2">
+        <Label htmlFor="floor">Floor (Optional)</Label>
+        <Input
+          id="floor"
+          value={formData.floor}
+          onChange={(e) => setFormData({ ...formData, floor: e.target.value })}
+          className="glass"
+          placeholder="e.g., 2nd Floor, Wing B"
+        />
+      </div>
+
+      {/* Delivery Address */}
       <div className="space-y-2">
         <div className="flex items-center justify-between">
-          <Label htmlFor="address">Delivery Address</Label>
-          <div className="flex">
-            <button
-              type="button"
-              className="text-xs text-primary hover:underline flex items-center ml-auto"
-              onClick={async () => {
-                if (navigator.geolocation) {
-                  navigator.geolocation.getCurrentPosition(async (position) => {
-                    const { latitude, longitude } = position.coords;
-                    // Use a free reverse geocoding API (e.g., Nominatim)
-                    const res = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}`);
-                    const data = await res.json();
-                    setFormData(prev => ({
-                      ...prev,
-                      address: data.display_name || prev.address
-                    }));
-                  }, () => {
-                    toast.error('Unable to detect location.');
-                  });
-                } else {
-                  toast.error('Geolocation is not supported.');
-                }
-              }}
-            >
-              <MapPin className="h-3 w-3 mr-1" />
-              Detect Location
-            </button>
-          </div>
+          <Label htmlFor="address">Delivery Address *</Label>
+          <button
+            type="button"
+            className="text-xs text-primary hover:underline flex items-center"
+            onClick={async () => {
+              if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(async (position) => {
+                  const { latitude, longitude } = position.coords;
+                  const res = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}`);
+                  const data = await res.json();
+                  setFormData(prev => ({
+                    ...prev,
+                    address: data.display_name || prev.address
+                  }));
+                }, () => {
+                  toast.error('Unable to detect location.');
+                });
+              } else {
+                toast.error('Geolocation is not supported.');
+              }
+            }}
+          >
+            <MapPin className="h-3 w-3 mr-1" />
+            Detect Location
+          </button>
         </div>
         <GooglePlacesAutocomplete
           value={formData.address}
@@ -211,24 +259,28 @@ const OrderForm = ({
           placeholder="Start typing your address..."
           className="glass w-full px-3 py-2 rounded-md border border-input focus:outline-none focus:ring-2 focus:ring-primary"
         />
-        <div className="space-y-1 mt-2">
-          <Label htmlFor="pincode">Pin Code</Label>
-          <Input
-            id="pincode"
-            maxLength={6}
-            pattern="[0-9]{6}"
-            value={formData.pincode || ""}
-            onChange={e => {
-              const value = e.target.value.replace(/\D/g, '').slice(0, 6);
-              setFormData(prev => ({ ...prev, pincode: value }));
-            }}
-            className="glass"
-            required
-          />
-          {formData.pincode && formData.pincode.startsWith('56') && (
-            <div className="text-xs text-primary mt-1">Estimated shipping: ₹600–700 (Bangalore region)</div>
-          )}
-        </div>
+      </div>
+
+      {/* Pincode */}
+      <div className="space-y-2">
+        <Label htmlFor="pincode">Pin Code *</Label>
+        <Input
+          id="pincode"
+          maxLength={6}
+          pattern="[0-9]{6}"
+          value={formData.pincode || ""}
+          onChange={e => {
+            const value = e.target.value.replace(/\D/g, '').slice(0, 6);
+            setFormData(prev => ({ ...prev, pincode: value }));
+          }}
+          className="glass"
+          required
+        />
+        {formData.pincode && formData.pincode.startsWith('56') && (
+          <p className="text-sm text-muted-foreground mt-1">
+            Shipping to Bangalore: ₹{shippingCost} (included in total)
+          </p>
+        )}
       </div>
 
       {!cartItems || cartItems.length === 0 ? (
@@ -288,6 +340,18 @@ const OrderForm = ({
                   </div>
                 </div>
               ))}
+              <div className="flex justify-between text-sm pt-2 border-t border-muted mt-2">
+                <span className="text-muted-foreground">Shipping</span>
+                <span className="font-medium">
+                  {shippingCost > 0 ? `₹${shippingCost}` : 'Calculated at checkout'}
+                </span>
+              </div>
+              <div className="flex justify-between text-base font-semibold pt-2 border-t border-muted mt-2">
+                <span>Total</span>
+                <span>
+                  ₹{cartItems.reduce((sum, item) => sum + (item.price * item.quantity), 0) + (shippingCost || 0)}
+                </span>
+              </div>
             </div>
           </div>
         </div>
@@ -315,7 +379,8 @@ const OrderForm = ({
           Place Order
         </Button>
       </div>
-    </motion.form>
+      </motion.form>
+    </>
   );
 };
 

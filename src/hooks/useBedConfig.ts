@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import { toast } from 'sonner';
 import { BedConfig, Size, Treatment } from '@/types/bed';
 import { PRODUCT_SIZES } from '@/lib/constants';
@@ -13,31 +13,56 @@ export const useBedConfig = () => {
 
   const { addToCart } = useCartContext();
 
-  const getProductData = (size: Size | '') => 
-    PRODUCT_SIZES.find(ps => ps.size === size);
+  const getProductData = useCallback((size: Size | '') => 
+    PRODUCT_SIZES.find(ps => ps.size === size),
+    []
+  );
 
-  const handleNext = () => {
+  const handleNext = useCallback(() => {
     if (config.currentStep === 'size' && config.selectedSize) {
-      setConfig(prev => ({ ...prev, currentStep: 'dimension' }));
+      const productData = getProductData(config.selectedSize as Size);
+      const dimensions = productData?.dimensions || [];
+      
+      // Auto-select dimension if there's only one option
+      if (dimensions.length === 1) {
+        setConfig(prev => ({
+          ...prev,
+          currentStep: 'dimension',
+          selectedDimension: dimensions[0]
+        }));
+      } else {
+        setConfig(prev => ({ ...prev, currentStep: 'dimension' }));
+      }
     }
-  };
+  }, [config.selectedSize, getProductData]);
 
-  const handleSizeSelect = (size: Size | '') => {
-    setConfig({
+  const handleSizeSelect = useCallback((size: Size | '') => {
+    const productData = getProductData(size as Size);
+    const dimensions = productData?.dimensions || [];
+    
+    // Auto-select dimension if there's only one option
+    const newState: BedConfig = {
       currentStep: 'size',
       selectedSize: size,
-      selectedDimension: ''
-    });
-  };
+      selectedDimension: dimensions.length === 1 ? dimensions[0] : ''
+    };
+    
+    // If there's only one dimension and we're selecting a size, auto-advance
+    if (dimensions.length === 1) {
+      newState.currentStep = 'dimension';
+    }
+    
+    setConfig(newState);
+  }, [getProductData]);
 
-  const handleDimensionSelect = (dimension: string) => {
+  const handleDimensionSelect = useCallback((dimension: string) => {
     setConfig(prev => ({
       ...prev,
       selectedDimension: dimension
     }));
-  };
+  }, []);
 
-  const handleAddToCart = () => {
+  const handleAddToCart = useCallback((openCart?: () => void) => {
     if (config.currentStep === 'dimension' && config.selectedDimension) {
       const productData = getProductData(config.selectedSize as Size);
       const defaultTreatment: Treatment = 'natural';
@@ -75,6 +100,11 @@ export const useBedConfig = () => {
       
       toast.success('Item added to cart!');
       
+      // Open cart after adding item
+      if (openCart) {
+        openCart();
+      }
+      
       // Reset configuration
       setConfig({
         currentStep: 'size',
@@ -82,7 +112,7 @@ export const useBedConfig = () => {
         selectedDimension: ''
       });
     }
-  };
+  }, [config.currentStep, config.selectedSize, config.selectedDimension, addToCart, getProductData]);
 
   return {
     config,
@@ -91,4 +121,4 @@ export const useBedConfig = () => {
     handleDimensionSelect,
     handleAddToCart
   };
-}; 
+};

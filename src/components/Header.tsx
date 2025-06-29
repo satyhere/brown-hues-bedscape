@@ -3,7 +3,6 @@ import { Menu } from "lucide-react";
 import { Link } from "react-router-dom";
 import CartSidebar from "@/components/CartSidebar";
 import { Sheet, SheetContent, SheetTrigger } from "./ui/sheet";
-import AuthButton from "./auth/AuthButton";
 
 const Header = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -70,9 +69,8 @@ const Header = () => {
             </button>
           </nav>
           
-          {/* Cart and Auth - Show on both mobile and desktop */}
+          {/* Cart - Show on both mobile and desktop */}
           <div className="flex items-center gap-2">
-            <AuthButton variant="ghost" size="sm" />
             <CartSidebar />
           </div>
         </div>

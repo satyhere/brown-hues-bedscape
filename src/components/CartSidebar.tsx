@@ -17,10 +17,7 @@ import { useNavigate } from "react-router-dom";
 import { CartItem } from "../types/bed";
 import { useCartContext } from "@/contexts/CartContext";
 
-interface CartSidebarProps {
-  isOpen?: boolean;
-  onOpenChange?: (open: boolean) => void;
-}
+interface CartSidebarProps {}
 
 const calculateItemPrice = (item: CartItem): number => {
   if (item.customPallets) {
@@ -49,15 +46,16 @@ const getPriceForSize = (size: string): number => {
 // Export the existing CartContext's useCartContext as useCart for backward compatibility
 export const useCart = useCartContext;
 
-const CartSidebar = ({ isOpen, onOpenChange }: CartSidebarProps) => {
-  const navigate = useNavigate();
-  const [localIsOpen, setLocalIsOpen] = useState(false);
+const CartSidebar = ({}: CartSidebarProps) => {
   const { 
+    isCartOpen, 
+    closeCart, 
     cart, 
     removeFromCart, 
     updateQuantity, 
-    clearCart
+    clearCart 
   } = useCartContext();
+  const navigate = useNavigate();
   
   const totalItems = cart.items.reduce((sum, item) => sum + item.quantity, 0);
   const subtotal = cart.total;
@@ -75,10 +73,7 @@ const CartSidebar = ({ isOpen, onOpenChange }: CartSidebarProps) => {
   };
 
   const proceedToCheckout = () => {
-    if (cart.items.length === 0) {
-      toast.error("Your cart is empty");
-      return;
-    }
+    if (cart.items.length === 0) return;
     
     navigate("/order", { 
       state: { 
@@ -87,18 +82,11 @@ const CartSidebar = ({ isOpen, onOpenChange }: CartSidebarProps) => {
       } 
     });
     
-    if (onOpenChange) {
-      onOpenChange(false);
-    } else {
-      setLocalIsOpen(false);
-    }
+    closeCart();
   };
   
-  const open = isOpen !== undefined ? isOpen : localIsOpen;
-  const setOpen = onOpenChange || setLocalIsOpen;
-  
   return (
-    <Sheet open={open} onOpenChange={setOpen}>
+    <Sheet open={isCartOpen} onOpenChange={(open) => !open && closeCart()}>
       <SheetTrigger asChild>
         <button className="relative glass-button p-2 rounded-full shadow">
           <ShoppingCart className="h-6 w-6 text-primary" />
@@ -210,10 +198,10 @@ const CartSidebar = ({ isOpen, onOpenChange }: CartSidebarProps) => {
               
               <div className="flex flex-col gap-2 mt-4">
                 <Button 
+                  className="w-full mt-4"
                   onClick={proceedToCheckout}
-                  className="w-full"
                 >
-                  Checkout
+                  Proceed to Add Address
                 </Button>
                 <div className="flex items-center gap-2 justify-center text-xs text-muted-foreground mt-2">
                   <MapPin className="h-4 w-4" />
