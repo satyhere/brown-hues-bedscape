@@ -149,17 +149,7 @@ const SizeVisualizer = ({ selectedSize, currentStep, selectedDimension }: SizeVi
                   </Button>
                 </motion.div>
                 
-                <motion.div 
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ delay: 0.4 }}
-                  className="mt-4 p-3 bg-muted/50 rounded-lg"
-                >
-                  <p className="text-sm text-muted-foreground">
-                    Custom sizes available: 36×36", 36×48", 30×36", and more. 
-                    Add multiple pallets with different dimensions as needed.
-                  </p>
-                </motion.div>
+
               </motion.div>
             ) : (
               <motion.div 
@@ -169,30 +159,40 @@ const SizeVisualizer = ({ selectedSize, currentStep, selectedDimension }: SizeVi
                 className="text-muted-foreground"
               >
                 <motion.div 
-                initial={{ opacity: 0, scale: 0.95 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ delay: 0.2 }}
-                className="relative w-full flex flex-col items-center justify-center"
-              >
-                <div className="w-full max-h-[250px] sm:max-h-[300px] md:max-h-[350px] flex items-center justify-center">
-                  <img
-                    src="/lovable-uploads/4cf8207a-4832-4929-8a39-4e78ee9bb833.png"
-                    alt="Bed Pallet"
-                    className="w-full h-auto max-h-full object-contain"
-                  />
-                </div>
-                {currentStep === 'dimension' && (
-                  <div className="glass px-3 py-1 rounded-full text-xs sm:text-sm mt-4">
-                    {selectedDimension
-                      ? `${selectedDimension.replace('x', '×').replace(/\s/g, '')}\"`
-                      : selectedSize === 'single' ? '72" × 36"'
-                      : selectedSize === 'double' ? '72" × 48"'
-                      : selectedSize === 'queen' ? '60" × 72"'
-                      : selectedSize === 'king' ? '72" × 72"'
-                      : 'Custom Size'}
+                  initial={{ opacity: 0, scale: 0.95 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ delay: 0.2 }}
+                  className="relative w-full flex flex-col items-center justify-center"
+                >
+                  <div className="w-full max-w-[300px] mx-auto">
+                    <img
+                      src="/lovable-uploads/4cf8207a-4832-4929-8a39-4e78ee9bb833.png"
+                      alt="Bed Pallet"
+                      className="w-full h-auto object-contain"
+                      style={{ maxHeight: 'min(60vh, 400px)' }}
+                    />
                   </div>
-                )}
-              </motion.div>
+                  {currentStep === 'dimension' && (
+                    <div className="flex items-center justify-center gap-2 mt-4">
+                      <div className="glass px-3 py-1 rounded-full text-xs sm:text-sm whitespace-nowrap">
+                        {selectedDimension
+                          ? `${selectedDimension.replace('x', '×').replace(/\s/g, '')}"`
+                          : selectedSize === 'single' ? '72" × 36"'
+                          : selectedSize === 'double' ? '72" × 48"'
+                          : selectedSize === 'queen' ? '60" × 72"'
+                          : selectedSize === 'king' ? '72" × 72"'
+                          : 'Custom Size'}
+                      </div>
+                      {['single', 'double', 'queen', 'king'].includes(selectedSize) && (
+                        <div className="glass px-3 py-1 rounded-full text-xs sm:text-sm whitespace-nowrap bg-primary/10 text-primary">
+                          {['single', 'double'].includes(selectedSize) 
+                            ? '2x Bed pallets'
+                            : '4x Bed pallets'}
+                        </div>
+                      )}
+                    </div>
+                  )}
+                </motion.div>
               </motion.div>
             )}
           </motion.div>

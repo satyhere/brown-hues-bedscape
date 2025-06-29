@@ -8,11 +8,27 @@ const Header = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const scrollToSection = (sectionId: string) => {
-    const element = document.getElementById(sectionId);
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth' });
+    if (window.location.pathname !== '/') {
+      // If not on home page, navigate to home with hash
+      window.location.href = `/#${sectionId}`;
+    } else {
+      // If on home page, just scroll to section
+      const element = document.getElementById(sectionId);
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth' });
+      }
     }
     setIsMobileMenuOpen(false);
+  };
+
+  // Handle navigation for non-home pages
+  const handleNavigation = (path: string) => {
+    if (path.startsWith('#')) {
+      const sectionId = path.substring(1);
+      scrollToSection(sectionId);
+    } else {
+      window.location.href = path;
+    }
   };
 
   return (
@@ -29,18 +45,18 @@ const Header = () => {
               </SheetTrigger>
               <SheetContent side="left" className="w-[240px]">
                 <nav className="flex flex-col gap-4 mt-8">
-                  <button onClick={() => scrollToSection('hero')} className="text-sm text-left">
+                  <Link to="/" className="text-sm text-left hover:text-primary" onClick={() => setIsMobileMenuOpen(false)}>
                     Home
-                  </button>
-                  <button onClick={() => scrollToSection('configurator')} className="text-sm text-left">
+                  </Link>
+                  <Link to="#configurator" className="text-sm text-left hover:text-primary" onClick={() => handleNavigation('#configurator')}>
                     Size Configurator
-                  </button>
-                  <button onClick={() => scrollToSection('testimonials')} className="text-sm text-left">
+                  </Link>
+                  <Link to="#testimonials" className="text-sm text-left hover:text-primary" onClick={() => handleNavigation('#testimonials')}>
                     Testimonials
-                  </button>
-                  <button onClick={() => scrollToSection('contact')} className="text-sm text-left">
+                  </Link>
+                  <Link to="#contact" className="text-sm text-left hover:text-primary" onClick={() => handleNavigation('#contact')}>
                     Contact
-                  </button>
+                  </Link>
                 </nav>
               </SheetContent>
             </Sheet>
@@ -48,25 +64,34 @@ const Header = () => {
 
           {/* Logo - Centered on mobile */}
           <div className="flex-1 md:flex-none text-center md:text-left">
-            <button onClick={() => scrollToSection('hero')} className="flex items-center gap-2 justify-center md:justify-start">
+            <Link to="/" className="flex items-center gap-2 justify-center md:justify-start">
               <span className="text-2xl md:text-3xl font-extrabold tracking-tight font-sans text-primary" style={{letterSpacing: '-0.02em'}}>BrownHues.in</span>
-            </button>
+            </Link>
           </div>
           
           {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center gap-6">
-            <button onClick={() => scrollToSection('hero')} className="text-sm text-primary/80">
+            <Link to="/" className="text-sm text-primary/80 hover:text-primary transition-colors">
               Home
-            </button>
-            <button onClick={() => scrollToSection('configurator')} className="text-sm text-primary/80">
+            </Link>
+            <Link to="#configurator" className="text-sm text-primary/80 hover:text-primary transition-colors" onClick={(e) => {
+              e.preventDefault();
+              handleNavigation('#configurator');
+            }}>
               Size Configurator
-            </button>
-            <button onClick={() => scrollToSection('testimonials')} className="text-sm text-primary/80">
+            </Link>
+            <Link to="#testimonials" className="text-sm text-primary/80 hover:text-primary transition-colors" onClick={(e) => {
+              e.preventDefault();
+              handleNavigation('#testimonials');
+            }}>
               Testimonials
-            </button>
-            <button onClick={() => scrollToSection('contact')} className="text-sm text-primary/80">
+            </Link>
+            <Link to="#contact" className="text-sm text-primary/80 hover:text-primary transition-colors" onClick={(e) => {
+              e.preventDefault();
+              handleNavigation('#contact');
+            }}>
               Contact
-            </button>
+            </Link>
           </nav>
           
           {/* Cart - Show on both mobile and desktop */}

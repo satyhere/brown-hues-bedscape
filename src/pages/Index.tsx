@@ -373,7 +373,7 @@ const Index = () => {
               <p className="text-sm md:text-base mb-2 md:mb-3">
                 Custom, high-quality pinewood pallets delivered to your doorstep in Bangalore.
               </p>
-              <p className="text-sm md:text-base mb-2"><strong>Email:</strong> info@brownhues.in</p>
+              <p className="text-sm md:text-base mb-2"><strong>Email:</strong> contact@brownhues.in</p>
               <p className="text-sm md:text-base"><strong>Address:</strong> Koramangala, Bangalore</p>
             </div>
             
