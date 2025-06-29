@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -11,9 +11,13 @@ import NotFound from "./pages/NotFound";
 import { CartProvider } from './contexts/CartContext'
 import { AuthProvider } from './contexts/AuthContext'
 import BlobBackground from "./components/BlobBackground";
+import { useClarity } from "./hooks/useClarity";
 
 const App: React.FC = () => {
   const [queryClient] = useState(() => new QueryClient());
+  
+  // Initialize Microsoft Clarity
+  useClarity('s73b8z0nq5');
 
   return (
     <AuthProvider>
