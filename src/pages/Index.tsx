@@ -363,11 +363,11 @@ const Index = () => {
           <h2 className="text-xl md:text-2xl font-bold text-center mb-3 md:mb-4">Contact Us</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
             <div>
-              <h3 className="text-base md:text-lg font-semibold mb-2">brownhues.co</h3>
+              <h3 className="text-base md:text-lg font-semibold mb-2">brownhues.in</h3>
               <p className="text-sm md:text-base mb-2 md:mb-3">
                 Custom, high-quality pinewood pallets delivered to your doorstep in Bangalore.
               </p>
-              <p className="text-sm md:text-base mb-2"><strong>Email:</strong> info@brownhues.co</p>
+              <p className="text-sm md:text-base mb-2"><strong>Email:</strong> info@brownhues.in</p>
               <p className="text-sm md:text-base mb-2"><strong>Phone:</strong> +91 9876543210</p>
               <p className="text-sm md:text-base"><strong>Address:</strong> Koramangala, Bangalore - 560034</p>
             </div>
@@ -378,7 +378,7 @@ const Index = () => {
 
       {/* Footer */}
       <footer className="pt-4 pb-6 md:pb-8 px-2 text-center">
-        <p className="text-sm md:text-base">© 2025 brownhues.co. All rights reserved.</p>
+        <p className="text-sm md:text-base">© 2025 brownhues.in. All rights reserved.</p>
       </footer>
 
       <main>

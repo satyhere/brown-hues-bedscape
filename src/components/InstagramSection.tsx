@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { ReelCarousel } from "./TestimonialSection";
+import { VideoCarousel } from "./VideoCarousel";
 
 const InstagramSection = () => (
   <section className="py-6 md:py-10 px-1 md:px-2">
@@ -12,12 +12,12 @@ const InstagramSection = () => (
     >
       <div className="container mx-auto px-2 md:px-4">
         <h2 className="text-2xl md:text-3xl font-bold text-center mb-8 md:mb-12">
-          Find our products on Instagram
+          As seen on Instagram
         </h2>
-        <ReelCarousel />
+        <VideoCarousel />
         <div className="text-center mt-6">
           <a
-            href="https://www.instagram.com/yourusername"
+            href="https://instagram.com/brownhues.in"
             target="_blank"
             rel="noopener noreferrer"
             className="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-gradient-to-r from-pink-500 via-red-500 to-yellow-500 text-white font-semibold shadow-lg hover:scale-105 transition-transform duration-200"
