@@ -50,7 +50,7 @@ const Header = () => {
           {/* Logo - Centered on mobile */}
           <div className="flex-1 md:flex-none text-center md:text-left">
             <button onClick={() => scrollToSection('hero')} className="flex items-center gap-2 justify-center md:justify-start">
-              <span className="text-2xl md:text-3xl font-extrabold tracking-tight font-sans text-primary" style={{letterSpacing: '-0.02em'}}>brownhues.in</span>
+              <span className="text-2xl md:text-3xl font-extrabold tracking-tight font-sans text-primary" style={{letterSpacing: '-0.02em'}}>BrownHues.in</span>
             </button>
           </div>
           

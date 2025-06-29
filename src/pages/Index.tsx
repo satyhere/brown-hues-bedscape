@@ -368,8 +368,7 @@ const Index = () => {
                 Custom, high-quality pinewood pallets delivered to your doorstep in Bangalore.
               </p>
               <p className="text-sm md:text-base mb-2"><strong>Email:</strong> info@brownhues.in</p>
-              <p className="text-sm md:text-base mb-2"><strong>Phone:</strong> +91 9876543210</p>
-              <p className="text-sm md:text-base"><strong>Address:</strong> Koramangala, Bangalore - 560034</p>
+              <p className="text-sm md:text-base"><strong>Address:</strong> Koramangala, Bangalore</p>
             </div>
             
           </div>
