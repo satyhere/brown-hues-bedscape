@@ -8,6 +8,7 @@ import Index from "./pages/Index";
 import Order from "./pages/Order";
 import Profile from "./pages/Profile";
 import NotFound from "./pages/NotFound";
+import { OrderConfirmation } from "./components/OrderConfirmation";
 import { CartProvider } from './contexts/CartContext'
 import { AuthProvider } from './contexts/AuthContext'
 import BlobBackground from "./components/BlobBackground";
@@ -31,6 +32,7 @@ const App: React.FC = () => {
               <Routes>
                 <Route path="/" element={<Index />} />
                 <Route path="/order" element={<Order />} />
+                <Route path="/order/confirmation" element={<OrderConfirmation />} />
                 <Route path="/profile" element={<Profile />} />
                 <Route path="*" element={<NotFound />} />
               </Routes>

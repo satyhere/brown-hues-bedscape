@@ -1,6 +1,7 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { motion } from "framer-motion";
 import { toast } from "sonner";
+import { useNavigate } from "react-router-dom";
 import { Input } from "./ui/input";
 import { GooglePlacesAutocomplete } from "./GooglePlacesAutocomplete";
 import { Label } from "./ui/label";
@@ -11,8 +12,6 @@ import { MapPin } from "lucide-react";
 import { createGuestOrderWithProfile } from "../integrations/supabase/services";
 import { CartItem } from "../types/bed";
 import { useAuth } from "../contexts/AuthContext";
-import { ThankYouPopup } from './ThankYouPopup';
-import { useNavigate } from "react-router-dom";
 
 interface OrderFormProps {
   initialSize?: string;
@@ -31,7 +30,6 @@ const OrderForm = ({
 }: OrderFormProps) => {
   const { user } = useAuth();
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [showThankYou, setShowThankYou] = useState(false);
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
     name: "",
@@ -48,10 +46,8 @@ const OrderForm = ({
     notes: "",
   });
 
-  // Calculate shipping cost based on pincode (example: 56 is Bangalore)
-  const shippingCost = formData.pincode?.startsWith('56') ? 650 : 0; // Default shipping cost for Bangalore
-
-  
+  // Shipping is handled by Porter based on actuals
+  const shippingCost = 0; // Will be calculated by Porter based on actuals
 
   useEffect(() => {
     setFormData(prev => ({ 
@@ -72,12 +68,13 @@ const OrderForm = ({
     }
   }, [user]);
 
-  const handleAddressSelected = (address: string) => {
+  // Handle address selection
+  const handleAddressSelected = useCallback((address: string) => {
     setFormData(prev => ({
       ...prev,
       address
     }));
-  };
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -94,9 +91,11 @@ const OrderForm = ({
         customer_email: user?.email || formData.email,
         customer_phone: formData.phone,
         delivery_address: `${formData.flatHouseNumber}${formData.floor ? `, ${formData.floor}` : ''}, ${formData.address}`.replace(/\s*,\s*$/, ''),
+        pincode: formData.pincode || '',
         notes: formData.notes,
         total_amount: totalAmount,
-        status: 'pending' as const
+        status: 'pending' as const,
+        created_at: new Date().toISOString()
       };
 
       // Create order items
@@ -110,47 +109,38 @@ const OrderForm = ({
       }));
 
       // Submit the order with profile creation
-      await createGuestOrderWithProfile(order, items);
+      const { order: createdOrder } = await createGuestOrderWithProfile(order, items);
       
-      toast.success("Order placed successfully! We'll contact you soon for delivery.");
-      
-      // Show thank you popup
-      setShowThankYou(true);
-      
-      // Reset the form
-      setFormData({
-        name: "",
-        phone: "",
-        email: user?.email || "",
-        address: "",
-        pincode: "",
-        flatHouseNumber: "",
-        floor: "",
-        size: initialSize,
-        dimension: initialDimension,
-        treatment: initialTreatment,
-        quantity: "1",
-        notes: "",
-      });
-      
-      // Call the callback if provided
+      // Clear the cart
       if (onOrderComplete) {
         onOrderComplete();
       }
+      
+      // Navigate to confirmation page with order data
+      navigate('/order/confirmation', {
+        state: {
+          orderData: {
+            order: createdOrder,
+            items: cartItems.map(item => ({
+              size: item.size,
+              dimension: item.dimension,
+              treatment: item.treatment,
+              quantity: item.quantity,
+              price: item.price
+            }))
+          }
+        }
+      });
     } catch (error) {
       console.error('Error submitting order:', error);
       toast.error("Failed to place order. Please try again.");
     }
   };
 
-  const handleCloseThankYou = () => {
-    setShowThankYou(false);
-    navigate("/");
-  };
+
 
   return (
     <>
-      <ThankYouPopup isOpen={showThankYou} onClose={handleCloseThankYou} />
       <motion.form
         initial={{ opacity: 0, y: 20 }}
         whileInView={{ opacity: 1, y: 0 }}
@@ -253,7 +243,8 @@ const OrderForm = ({
             setFormData(prev => ({
               ...prev,
               address: val,
-              pincode: pincode || prev.pincode
+              // Only update pincode if we got a valid one from the address
+              ...(pincode ? { pincode } : {})
             }));
           }}
           placeholder="Start typing your address..."
@@ -276,11 +267,9 @@ const OrderForm = ({
           className="glass"
           required
         />
-        {formData.pincode && formData.pincode.startsWith('56') && (
-          <p className="text-sm text-muted-foreground mt-1">
-            Shipping to Bangalore: ₹{shippingCost} (included in total)
-          </p>
-        )}
+        <p className="text-sm text-muted-foreground mt-1">
+          Shipping charges will be calculated by Porter based on actuals
+        </p>
       </div>
 
       {!cartItems || cartItems.length === 0 ? (
@@ -343,7 +332,7 @@ const OrderForm = ({
               <div className="flex justify-between text-sm pt-2 border-t border-muted mt-2">
                 <span className="text-muted-foreground">Shipping</span>
                 <span className="font-medium">
-                  {shippingCost > 0 ? `₹${shippingCost}` : 'Calculated at checkout'}
+                  Based on Porter Actuals
                 </span>
               </div>
               <div className="flex justify-between text-base font-semibold pt-2 border-t border-muted mt-2">

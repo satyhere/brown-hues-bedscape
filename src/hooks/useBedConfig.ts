@@ -40,19 +40,12 @@ export const useBedConfig = () => {
     const productData = getProductData(size as Size);
     const dimensions = productData?.dimensions || [];
     
-    // Auto-select dimension if there's only one option
-    const newState: BedConfig = {
+    // Set the selected size without auto-advancing
+    setConfig({
       currentStep: 'size',
       selectedSize: size,
-      selectedDimension: dimensions.length === 1 ? dimensions[0] : ''
-    };
-    
-    // If there's only one dimension and we're selecting a size, auto-advance
-    if (dimensions.length === 1) {
-      newState.currentStep = 'dimension';
-    }
-    
-    setConfig(newState);
+      selectedDimension: ''
+    });
   }, [getProductData]);
 
   const handleDimensionSelect = useCallback((dimension: string) => {

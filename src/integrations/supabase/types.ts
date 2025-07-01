@@ -17,6 +17,7 @@ export type Database = {
           customer_email: string
           customer_phone: string
           delivery_address: string
+          pincode: string | null
           notes: string | null
           status: 'pending' | 'confirmed' | 'delivered' | 'cancelled'
           total_amount: number
@@ -28,6 +29,7 @@ export type Database = {
           customer_email: string
           customer_phone: string
           delivery_address: string
+          pincode?: string | null
           notes?: string | null
           status?: 'pending' | 'confirmed' | 'delivered' | 'cancelled'
           total_amount: number
@@ -39,6 +41,7 @@ export type Database = {
           customer_email?: string
           customer_phone?: string
           delivery_address?: string
+          pincode?: string | null
           notes?: string | null
           status?: 'pending' | 'confirmed' | 'delivered' | 'cancelled'
           total_amount?: number
@@ -88,6 +91,7 @@ export type Database = {
           email: string
           phone: string | null
           address: string | null
+          pincode: string | null
           orders_count: number
         }
         Insert: {

@@ -50,6 +50,7 @@ const CartSidebar = ({}: CartSidebarProps) => {
   const { 
     isCartOpen, 
     closeCart, 
+    openCart,
     cart, 
     removeFromCart, 
     updateQuantity, 
@@ -86,9 +87,12 @@ const CartSidebar = ({}: CartSidebarProps) => {
   };
   
   return (
-    <Sheet open={isCartOpen} onOpenChange={(open) => !open && closeCart()}>
+    <Sheet open={isCartOpen} onOpenChange={(open) => open ? openCart() : closeCart()}>
       <SheetTrigger asChild>
-        <button className="relative glass-button p-2 rounded-full shadow">
+        <button 
+          className="relative glass-button p-2 rounded-full shadow"
+          onClick={openCart}
+        >
           <ShoppingCart className="h-6 w-6 text-primary" />
           {totalItems > 0 && (
             <span className="absolute -top-2 -right-2 bg-primary text-primary-foreground rounded-full h-5 w-5 text-xs flex items-center justify-center">
@@ -139,9 +143,16 @@ const CartSidebar = ({}: CartSidebarProps) => {
                             ))}
                           </div>
                         ) : (
-                          <p className="text-sm text-muted-foreground">
-                            {item.dimension} • {item.treatment}
-                          </p>
+                          <div className="flex items-center gap-2">
+                            <p className="text-sm text-muted-foreground">
+                              {item.dimension} • {item.treatment}
+                            </p>
+                            {['single', 'double', 'queen', 'king'].includes(item.size) && (
+                              <span className="text-xs bg-primary/10 text-primary px-2 py-0.5 rounded-full">
+                                {`${item.quantity * (['single', 'double'].includes(item.size) ? 2 : 4)} Pallets`}
+                              </span>
+                            )}
+                          </div>
                         )}
                       </div>
                       <div className="text-right">
@@ -187,7 +198,7 @@ const CartSidebar = ({}: CartSidebarProps) => {
                 </div>
                 <div className="flex justify-between text-sm text-muted-foreground">
                   <span>Shipping</span>
-                  <span>Calculated at checkout</span>
+                  <span>Based on Porter Actuals</span>
                 </div>
                 <Separator />
                 <div className="flex justify-between font-medium">
@@ -204,8 +215,8 @@ const CartSidebar = ({}: CartSidebarProps) => {
                   Proceed to Add Address
                 </Button>
                 <div className="flex items-center gap-2 justify-center text-xs text-muted-foreground mt-2">
-                  <MapPin className="h-4 w-4" />
-                  <span>Shipping charges (if any) will be calculated after you enter your address at checkout.</span>
+                  <MapPin className="h-4 w-4 flex-shrink-0" />
+                  <span className="text-center">Intra-City deliveries available through Porter from Lal Bagh Main Road, Bangalore</span>
                 </div>
               </div>
             </div>

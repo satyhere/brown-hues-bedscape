@@ -67,7 +67,7 @@ const SizeVisualizer = ({ selectedSize, currentStep, selectedDimension }: SizeVi
               transition={{ delay: 0.1 }}
               className="text-2xl font-semibold mb-6"
             >
-              {selectedSize === "custom" ? "Customize Your Pallets" : `Visualize Your ${selectedSize} Bed`}
+              {selectedSize === "custom" ? "Customize Your Pallets" : `Visualize Your ${selectedSize.charAt(0).toUpperCase() + selectedSize.slice(1)} Bed`}
             </motion.h3>
             
             {selectedSize === "custom" ? (
@@ -172,26 +172,20 @@ const SizeVisualizer = ({ selectedSize, currentStep, selectedDimension }: SizeVi
                       style={{ maxHeight: 'min(60vh, 400px)' }}
                     />
                   </div>
-                  {currentStep === 'dimension' && (
-                    <div className="flex items-center justify-center gap-2 mt-4">
+                  <div className="flex items-center justify-center gap-2 mt-4">
+                    {selectedDimension && (
                       <div className="glass px-3 py-1 rounded-full text-xs sm:text-sm whitespace-nowrap">
-                        {selectedDimension
-                          ? `${selectedDimension.replace('x', '×').replace(/\s/g, '')}"`
-                          : selectedSize === 'single' ? '72" × 36"'
-                          : selectedSize === 'double' ? '72" × 48"'
-                          : selectedSize === 'queen' ? '60" × 72"'
-                          : selectedSize === 'king' ? '72" × 72"'
-                          : 'Custom Size'}
+                        {selectedDimension.replace('x', '×').replace(/\s/g, '')}
                       </div>
-                      {['single', 'double', 'queen', 'king'].includes(selectedSize) && (
-                        <div className="glass px-3 py-1 rounded-full text-xs sm:text-sm whitespace-nowrap bg-primary/10 text-primary">
-                          {['single', 'double'].includes(selectedSize) 
-                            ? '2x Bed pallets'
-                            : '4x Bed pallets'}
-                        </div>
-                      )}
-                    </div>
-                  )}
+                    )}
+                    {selectedSize && ['single', 'double', 'queen', 'king'].includes(selectedSize) && (
+                      <div className="glass px-3 py-1 rounded-full text-xs sm:text-sm whitespace-nowrap bg-primary/10 text-primary">
+                        {['single', 'double'].includes(selectedSize) 
+                          ? '2x Bed pallets'
+                          : '4x Bed pallets'}
+                      </div>
+                    )}
+                  </div>
                 </motion.div>
               </motion.div>
             )}
