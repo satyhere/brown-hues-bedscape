@@ -45,7 +45,17 @@ const Header = () => {
               </SheetTrigger>
               <SheetContent side="left" className="w-[240px]">
                 <nav className="flex flex-col gap-4 mt-8">
-                  <Link to="/" className="text-sm text-left hover:text-primary" onClick={() => setIsMobileMenuOpen(false)}>
+                  <Link 
+                    to="/" 
+                    className="text-sm text-left hover:text-primary" 
+                    onClick={(e) => {
+                      setIsMobileMenuOpen(false);
+                      if (window.location.pathname === '/') {
+                        e.preventDefault();
+                        window.scrollTo({ top: 0, behavior: 'smooth' });
+                      }
+                    }}
+                  >
                     Home
                   </Link>
                   <Link to="#configurator" className="text-sm text-left hover:text-primary" onClick={() => handleNavigation('#configurator')}>
@@ -64,14 +74,32 @@ const Header = () => {
 
           {/* Logo - Centered on mobile */}
           <div className="flex-1 md:flex-none text-center md:text-left">
-            <Link to="/" className="flex items-center gap-2 justify-center md:justify-start">
+            <Link 
+              to="/" 
+              className="flex items-center gap-2 justify-center md:justify-start"
+              onClick={(e) => {
+                if (window.location.pathname === '/') {
+                  e.preventDefault();
+                  window.scrollTo({ top: 0, behavior: 'smooth' });
+                }
+              }}
+            >
               <span className="text-2xl md:text-3xl font-extrabold tracking-tight font-sans text-primary" style={{letterSpacing: '-0.02em'}}>BrownHues.in</span>
             </Link>
           </div>
           
           {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center gap-6">
-            <Link to="/" className="text-sm text-primary/80 hover:text-primary transition-colors">
+            <Link 
+              to="/" 
+              className="text-sm text-primary/80 hover:text-primary transition-colors"
+              onClick={(e) => {
+                if (window.location.pathname === '/') {
+                  e.preventDefault();
+                  window.scrollTo({ top: 0, behavior: 'smooth' });
+                }
+              }}
+            >
               Home
             </Link>
             <Link to="#configurator" className="text-sm text-primary/80 hover:text-primary transition-colors" onClick={(e) => {

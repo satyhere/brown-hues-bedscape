@@ -90,7 +90,11 @@ const OrderForm = ({
         customer_name: formData.name,
         customer_email: user?.email || formData.email,
         customer_phone: formData.phone,
-        delivery_address: `${formData.flatHouseNumber}${formData.floor ? `, ${formData.floor}` : ''}, ${formData.address}`.replace(/\s*,\s*$/, ''),
+        delivery_address: [
+          formData.flatHouseNumber,
+          formData.floor,
+          formData.address
+        ].filter(Boolean).join(', '),
         pincode: formData.pincode || '',
         notes: formData.notes,
         total_amount: totalAmount,
@@ -183,20 +187,19 @@ const OrderForm = ({
         />
       </div>
 
-      {/* Flat/House Number */}
+      {/* Flat/House Number (Optional) */}
       <div className="space-y-2">
-        <Label htmlFor="flatHouseNumber">Flat/House Number *</Label>
+        <Label htmlFor="flatHouseNumber">Flat/House Number (Optional)</Label>
         <Input
           id="flatHouseNumber"
           value={formData.flatHouseNumber}
           onChange={(e) => setFormData({ ...formData, flatHouseNumber: e.target.value })}
           className="glass"
-          required
           placeholder="e.g., 101, A Wing"
         />
       </div>
 
-      {/* Floor */}
+      {/* Floor (Optional) */}
       <div className="space-y-2">
         <Label htmlFor="floor">Floor (Optional)</Label>
         <Input
@@ -357,8 +360,7 @@ const OrderForm = ({
       </div>
 
       <div className="pt-4">
-        <p className="text-sm text-muted-foreground mb-4 flex items-center">
-          <MapPin className="mr-2 h-4 w-4" />
+        <p className="text-sm text-muted-foreground mb-4">
           Pay on delivery - No advance payment required
         </p>
         <Button
