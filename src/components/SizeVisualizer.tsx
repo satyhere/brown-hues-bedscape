@@ -1,5 +1,5 @@
-import { motion, useScroll, useTransform, AnimatePresence } from "framer-motion";
-import { useRef, useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { useState } from "react";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import { Label } from "./ui/label";
@@ -18,13 +18,6 @@ interface CustomPalletSize {
 }
 
 const SizeVisualizer = ({ selectedSize, currentStep, selectedDimension }: SizeVisualizerProps) => {
-  const ref = useRef<HTMLDivElement>(null);
-  const { scrollYProgress } = useScroll({
-    target: ref,
-    offset: ["start end", "end start"],
-  });
-
-  const scale = useTransform(scrollYProgress, [0, 0.5, 1], [0.8, 1, 0.8]);
   
   const [customPallets, setCustomPallets] = useState<CustomPalletSize[]>([
     { width: "36", length: "36", quantity: "1" }
@@ -49,7 +42,6 @@ const SizeVisualizer = ({ selectedSize, currentStep, selectedDimension }: SizeVi
   return (
     <AnimatePresence mode="wait">
       <motion.section
-        ref={ref}
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         exit={{ opacity: 0, y: 20 }}
@@ -57,10 +49,7 @@ const SizeVisualizer = ({ selectedSize, currentStep, selectedDimension }: SizeVi
         className="py-4 md:py-12 px-4 flex items-center justify-center"
       >
         <div className="container mx-auto text-center">
-          <motion.div
-            style={{ scale }}
-            className="w-full max-w-2xl mx-auto glass rounded-2xl p-6 md:p-8 relative overflow-visible"
-          >
+          <div className="w-full max-w-2xl mx-auto glass rounded-2xl p-6 md:p-8 relative overflow-visible">
             <motion.h3 
               initial={{ opacity: 0, y: -10 }}
               animate={{ opacity: 1, y: 0 }}
@@ -189,7 +178,7 @@ const SizeVisualizer = ({ selectedSize, currentStep, selectedDimension }: SizeVi
                 </motion.div>
               </motion.div>
             )}
-          </motion.div>
+          </div>
         </div>
       </motion.section>
     </AnimatePresence>

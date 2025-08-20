@@ -1,17 +1,20 @@
 
 import { useLocation, useNavigate } from "react-router-dom";
-import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import OrderForm from "@/components/OrderForm";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ChevronLeft } from "lucide-react";
 import Header from "@/components/Header";
 import { useCart } from "@/components/CartSidebar";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import ShiprocketOrderExample from "@/components/ShiprocketOrderExample";
 
 const Order = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const { cart, clearCart } = useCart();
+  const [activeTab, setActiveTab] = useState("order");
   
   const fromCart = location.state?.fromCart || false;
   const cartItems = location.state?.cartItems || [];
@@ -44,53 +47,82 @@ const Order = () => {
     <div className="min-h-screen w-full py-8 px-4">
       <Header />
       
-      <div className="container mx-auto max-w-2xl pt-20">
+      <div className="container mx-auto max-w-4xl pt-20">
         <Button 
           variant="ghost" 
           className="mb-6"
           onClick={() => navigate(-1)}
         >
           <ChevronLeft className="mr-2 h-4 w-4" />
-          Back to {fromCart ? "Cart" : "Configurator"}
+          Back to {fromCart ? 'Cart' : 'Home'}
         </Button>
 
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="text-center mb-8"
+        <Tabs 
+          defaultValue="order" 
+          value={activeTab}
+          onValueChange={setActiveTab}
+          className="w-full"
         >
-          <h1 className="text-3xl font-bold mb-2">Complete Your Order</h1>
-          
-          {fromCart ? (
-            <p className="text-muted-foreground">
-              Review your cart items and complete your delivery information
-            </p>
-          ) : (
-            <>
-              <p className="text-muted-foreground mb-1">
-                Size: {selectedSize.charAt(0).toUpperCase() + selectedSize.slice(1)}
-              </p>
-              {selectedDimension && (
-                <p className="text-muted-foreground mb-1">
-                  Dimension: {selectedDimension} inches
-                </p>
-              )}
-              {selectedTreatment && (
-                <p className="text-muted-foreground">
-                  Treatment: {selectedTreatment.charAt(0).toUpperCase() + selectedTreatment.slice(1)}
-                </p>
-              )}
-            </>
-          )}
-        </motion.div>
+          <TabsList className="grid w-full grid-cols-2 max-w-md mb-8">
+            <TabsTrigger value="order">Place Order</TabsTrigger>
+            <TabsTrigger value="shiprocket">Shiprocket Test</TabsTrigger>
+          </TabsList>
 
-        <OrderForm 
-          initialSize={selectedSize} 
-          initialDimension={selectedDimension} 
-          initialTreatment={selectedTreatment}
-          cartItems={items}
-          onOrderComplete={handleOrderComplete}
-        />
+          <TabsContent value="order">
+            <div
+            >
+              <Card>
+                <CardHeader>
+                  <CardTitle>Complete Your Order</CardTitle>
+                  <CardDescription>
+                    Please fill in your details to complete your purchase
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="mb-4">
+                    <p className="text-muted-foreground mb-1">
+                      Size: {selectedSize.charAt(0).toUpperCase() + selectedSize.slice(1)}
+                    </p>
+                    {selectedDimension && (
+                      <p className="text-muted-foreground mb-1">
+                        Dimension: {selectedDimension} inches
+                      </p>
+                    )}
+                    {selectedTreatment && (
+                      <p className="text-muted-foreground">
+                        Treatment: {selectedTreatment.charAt(0).toUpperCase() + selectedTreatment.slice(1)}
+                      </p>
+                    )}
+                  </div>
+                  
+                  <OrderForm 
+                    initialSize={selectedSize} 
+                    initialDimension={selectedDimension} 
+                    initialTreatment={selectedTreatment}
+                    cartItems={items}
+                    onOrderComplete={handleOrderComplete}
+                  />
+                </CardContent>
+              </Card>
+            </div>
+          </TabsContent>
+
+          <TabsContent value="shiprocket">
+            <div>
+              <Card>
+                <CardHeader>
+                  <CardTitle>Shiprocket Integration Test</CardTitle>
+                  <CardDescription>
+                    Test the Shiprocket API integration
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <ShiprocketOrderExample />
+                </CardContent>
+              </Card>
+            </div>
+          </TabsContent>
+        </Tabs>
       </div>
     </div>
   );

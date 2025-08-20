@@ -9,6 +9,11 @@ import Order from "./pages/Order";
 import Profile from "./pages/Profile";
 import NotFound from "./pages/NotFound";
 import { OrderConfirmation } from "./components/OrderConfirmation";
+import TermsAndConditions from "./pages/terms";
+import PrivacyPolicy from "./pages/privacy";
+import RefundPolicy from "./pages/refund";
+import ShippingPolicy from "./pages/shipping";
+import ReturnPolicy from "./pages/returns";
 import { CartProvider } from './contexts/CartContext'
 import { AuthProvider } from './contexts/AuthContext'
 import BlobBackground from "./components/BlobBackground";
@@ -34,6 +39,11 @@ const App: React.FC = () => {
                 <Route path="/order" element={<Order />} />
                 <Route path="/order/confirmation" element={<OrderConfirmation />} />
                 <Route path="/profile" element={<Profile />} />
+                <Route path="/terms" element={<TermsAndConditions />} />
+                <Route path="/privacy" element={<PrivacyPolicy />} />
+                <Route path="/refund" element={<RefundPolicy />} />
+                <Route path="/shipping" element={<ShippingPolicy />} />
+                <Route path="/returns" element={<ReturnPolicy />} />
                 <Route path="*" element={<NotFound />} />
               </Routes>
             </BrowserRouter>

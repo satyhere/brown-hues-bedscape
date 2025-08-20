@@ -1,15 +1,8 @@
-import { motion } from "framer-motion";
 import { VideoCarousel } from "./VideoCarousel";
 
 const InstagramSection = () => (
   <section className="py-6 md:py-10 px-1 md:px-2">
-    <motion.div 
-      initial={{ opacity: 0, y: 40 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: "-100px" }}
-      transition={{ duration: 0.6 }}
-      className="mt-0 md:mt-0"
-    >
+    <div className="mt-0 md:mt-0">
       <div className="container mx-auto px-2 md:px-4">
         <h2 className="text-2xl md:text-3xl font-bold text-center mb-8 md:mb-12">
           As seen on Instagram
@@ -39,7 +32,7 @@ const InstagramSection = () => (
           </a>
         </div>
       </div>
-    </motion.div>
+    </div>
   </section>
 );
 

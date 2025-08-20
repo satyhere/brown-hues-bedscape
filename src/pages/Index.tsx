@@ -1,7 +1,6 @@
 import { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
 import { MapPin, Truck, Shield, CheckCircle2, ChevronLeft, ShoppingCart, ChevronRight } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import TestimonialSection from "@/components/TestimonialSection";
@@ -58,54 +57,26 @@ const Index = () => {
           paddingBottom: 0
         }}
       >
-        <motion.div 
-          initial={{ opacity: 0, y: 18 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.67 }}
-          className="container mx-auto text-center"
-        >
-          <motion.span 
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.2 }}
-            className="glass px-3 py-1 rounded-full text-xs md:text-sm font-medium mb-3 md:mb-4 mt-5 md:mt-8 inline-block tracking-wide shadow-sm"
-          >
+        <div className="container mx-auto text-center">
+          <span className="glass px-3 py-1 rounded-full text-xs md:text-sm font-medium mb-3 md:mb-4 mt-5 md:mt-8 inline-block tracking-wide shadow-sm">
             Premium Bed Pallets in Bangalore
-          </motion.span>
-          <motion.h1 
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.3 }}
-            className="font-roboto text-[2rem] sm:text-4xl md:text-5xl mb-2 md:mb-3 text-center font-extralight text-card-foreground"
-          >
+          </span>
+          <h1 className="font-roboto text-[2rem] sm:text-4xl md:text-5xl mb-2 md:mb-3 text-center font-extralight text-card-foreground">
             Design Your Bed
-          </motion.h1>
-          <motion.p 
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.4 }}
-            className="text-base md:text-lg lg:text-xl text-muted-foreground max-w-2xl mx-auto mb-4 md:mb-6 px-2"
-          >
+          </h1>
+          <p className="text-base md:text-lg lg:text-xl text-muted-foreground max-w-2xl mx-auto mb-4 md:mb-6 px-2">
             Custom, high-quality Pinewood Pallets delivered right to your doorstep.
-          </motion.p>
+          </p>
           
           {/* Step Navigation */}
-          <motion.div 
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.5 }}
-            className="flex flex-wrap justify-center items-center gap-2 mb-0.5 mt-0.5 md:mt-1 px-2"
-          >
+          <div className="flex flex-wrap justify-center gap-2 md:gap-4 mb-6 md:mb-8 px-4">
             {CONFIGURATION_STEPS.map((step, i) => {
   const isActive = i === currentStepIndex;
   const isCompleted = i < currentStepIndex;
   return (
-    <motion.div
+    <div
       key={step.key}
       className={`flex items-center relative ${i !== 0 ? "ml-2 md:ml-4" : ""}`}
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      transition={{ delay: i * 0.17 }}
     >
       <div
         className={`relative flex items-center justify-center w-8 h-8 md:w-9 md:h-9 rounded-full border-2 transition-all duration-200
@@ -129,58 +100,40 @@ const Index = () => {
       `}>
         {step.label}
       </span>
-    </motion.div>
+    </div>
   );
 })}
 
 
-          </motion.div>
-        </motion.div>
+          </div>
+        </div>
       </section>
 
       {/* Size Visualizer */}
-      <AnimatePresence>
-        {config.selectedSize && (
-          <motion.div
-            key="visualizer"
-            initial={{ height: 0, opacity: 0 }}
-            animate={{ height: 'auto', opacity: 1 }}
-            exit={{ height: 0, opacity: 0 }}
-            transition={{ duration: 0.5, ease: 'easeInOut' }}
-            className="overflow-hidden"
-          >
-            <SizeVisualizer selectedSize={config.selectedSize} currentStep={config.currentStep} selectedDimension={config.selectedDimension} />
-          </motion.div>
-        )}
-      </AnimatePresence>
+      {config.selectedSize && (
+        <div
+          className="overflow-hidden"
+        >
+          <SizeVisualizer selectedSize={config.selectedSize} currentStep={config.currentStep} selectedDimension={config.selectedDimension} />
+        </div>
+      )}
 
       {/* Configurator Section */}
       <section className="py-4 md:py-6 px-2 md:px-4" id="configurator">
         <div className="container mx-auto max-w-4xl">
-          <motion.div 
-            initial={{ opacity: 0, y: 13 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-100px" }}
-            transition={{ duration: 0.5 }}
-            className="space-y-4"
-          >
+          <div className="space-y-4">
             {/* Size Selection */}
             {config.currentStep === "size" && (
               <>
                 <h2 className="text-xl md:text-2xl font-bold text-center mb-2 md:mb-4">Select Size</h2>
                 <div className="grid grid-cols-2 md:grid-cols-5 gap-2 md:gap-3 mb-2 md:mb-4">
                   {PRODUCT_SIZES.map(sizeObj => (
-                    <motion.div 
+                    <div
                       key={sizeObj.size}
-                      whileHover={{ 
-                        scale: 1.065,
-                        boxShadow: "0 6px 32px 0 rgba(180,150,125,0.15)" 
-                      }}
-                      whileTap={{ scale: 0.97 }}
-                      className={`glass p-3 md:p-4 rounded-xl card-animate cursor-pointer flex flex-col items-center justify-center hover:shadow-accent transition-all duration-200 ${
+                      className={`relative flex flex-col items-center justify-center p-3 md:p-4 rounded-lg cursor-pointer transition-colors ${
                         config.selectedSize === sizeObj.size 
-                          ? "ring-2 ring-primary border-primary scale-105 shadow-xl" 
-                          : ""
+                          ? 'bg-primary/10 border-2 border-primary' 
+                          : 'bg-card/50 border border-border hover:bg-card/80'
                       }`}
                       onClick={() => handleSizeSelect(sizeObj.size)}
                     >
@@ -197,15 +150,11 @@ const Index = () => {
                         {sizeObj.size === 'custom' ? 'Variable' : `₹${sizeObj.price}`}
                       </span>
                       {config.selectedSize === sizeObj.size && (
-                        <motion.div 
-                          initial={{ opacity: 0 }}
-                          animate={{ opacity: 1 }}
-                          className="mt-1 md:mt-2 text-[10px] md:text-xs text-primary font-medium animate-fade-in"
-                        >
+                        <div className="mt-1 md:mt-2 text-[10px] md:text-xs text-primary font-medium">
                           Selected
-                        </motion.div>
+                        </div>
                       )}
-                    </motion.div>
+                    </div>
                   ))}
                 </div>
                 {/* Step Navigation Buttons */}
@@ -244,10 +193,8 @@ const Index = () => {
                 <h2 className="text-xl md:text-2xl font-bold text-center">Select Dimensions</h2>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-3 md:gap-4">
                   {PRODUCT_SIZES.find(s => s.size === config.selectedSize)?.dimensions.map(dimension => (
-                    <motion.div
+                    <div
                       key={dimension}
-                      whileHover={{ scale: 1.02 }}
-                      whileTap={{ scale: 0.98 }}
                       className={`p-3 md:p-4 rounded-lg border cursor-pointer ${
                         config.selectedDimension === dimension
                           ? "border-primary bg-primary/5"
@@ -259,7 +206,7 @@ const Index = () => {
                         <span className="text-base md:text-lg font-semibold">{dimension}</span>
                         <p className="text-xs md:text-sm text-muted-foreground">inches</p>
                       </div>
-                    </motion.div>
+                    </div>
                   ))}
                 </div>
                 {/* Step Navigation Buttons */}
@@ -305,7 +252,7 @@ const Index = () => {
                 </div>
               </div>
             )}
-          </motion.div>
+          </div>
         </div>
       </section>
 
@@ -330,26 +277,14 @@ const Index = () => {
                 description: "Delivery available across Bangalore" 
               }
             ].map((feature, index) => (
-              <motion.div
+              <div
                 key={index}
-                initial={{ opacity: 0, y: 14 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: "-100px" }}
-                transition={{ 
-                  delay: index * 0.20, 
-                  duration: 0.6,
-                  type: "spring"
-                }}
-                whileHover={{
-                  scale: 1.065,
-                  rotate: 1.5
-                }}
-                className="glass p-4 md:p-5 rounded-xl card-animate flex flex-col items-center group cursor-pointer"
+                className="glass p-4 md:p-5 rounded-xl flex flex-col items-center group cursor-pointer"
               >
                 <feature.icon className="w-9 h-9 md:w-11 md:h-11 mb-2 md:mb-3 text-primary group-hover:animate-float group-hover:text-accent transition-all duration-200" />
                 <h3 className="text-base md:text-lg lg:text-xl font-semibold mb-1 text-center">{feature.title}</h3>
                 <p className="text-sm md:text-base text-muted-foreground text-center">{feature.description}</p>
-              </motion.div>
+              </div>
             ))}
           </div>
         </div>
@@ -382,8 +317,19 @@ const Index = () => {
       </section>
 
       {/* Footer */}
-      <footer className="pt-4 pb-6 md:pb-8 px-2 text-center">
-        <p className="text-sm md:text-base">© 2025 brownhues.in. All rights reserved.</p>
+      <footer className="pt-4 pb-6 md:pb-8 px-4 text-center">
+        <div className="flex flex-wrap justify-center gap-4 mb-3 text-sm text-muted-foreground">
+          <Link to="/terms" className="hover:text-primary transition-colors">Terms</Link>
+          <span>•</span>
+          <Link to="/privacy" className="hover:text-primary transition-colors">Privacy</Link>
+          <span>•</span>
+          <Link to="/refund" className="hover:text-primary transition-colors">Refunds</Link>
+          <span>•</span>
+          <Link to="/shipping" className="hover:text-primary transition-colors">Shipping</Link>
+          <span>•</span>
+          <Link to="/returns" className="hover:text-primary transition-colors">Returns</Link>
+        </div>
+        <p className="text-sm md:text-base text-muted-foreground">© 2025 brownhues.in. All rights reserved.</p>
       </footer>
 
       <main>
