@@ -94,8 +94,8 @@ export default function PrivacyPolicy() {
             <address className="not-italic mt-2">
               SHIKHA PRIYADARSHINI<br />
               Carmelram, Bangalore, India<br />
-              Email: [Your Contact Email]<br />
-              Phone: [Your Contact Number]
+              Email: contact@brownhues.in<br />
+              Phone: +91 9153976407
             </address>
           </section>
         </div>

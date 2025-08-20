@@ -31,7 +31,7 @@ export default function RefundPolicy() {
             <h2 className="text-2xl font-semibold mt-8 mb-4">Non-Returnable Items</h2>
             <p>SHIKHA PRIYADARSHANI does not accept cancellation requests for the following categories of items:</p>
             <ul className="list-disc pl-6 mt-2 space-y-2">
-              <li>Perishable items like flowers, eatables, etc.</li>
+
               <li>Products marked as "non-returnable" on the product page</li>
               <li>Personalized or made-to-order items</li>
               <li>Products without original packaging, tags, and accessories</li>
@@ -58,7 +58,7 @@ export default function RefundPolicy() {
           <section>
             <h2 className="text-2xl font-semibold mt-8 mb-4">Refund Processing</h2>
             <p>
-              For approved refunds, please allow up to 7 business days for the refund to be processed to your original payment method. The exact timing may vary depending on your bank or payment provider.
+              For approved refunds, please allow up to 7 business days for the refund to be credited to your original payment method. The exact timing may vary depending on your bank or payment provider.
             </p>
           </section>
 

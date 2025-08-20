@@ -16,7 +16,7 @@ export default function ShippingPolicy() {
           <section>
             <h2 className="text-2xl font-semibold mb-4">Shipping Information</h2>
             <p>
-              All orders are processed and shipped within 5 business days from the date of order confirmation. Delivery times may vary depending on your location and the shipping method selected at checkout.
+              All orders are processed and shipped within 5-7 business days from the date of order confirmation. Delivery times may vary depending on your location and the shipping method selected at checkout.
             </p>
           </section>
 
@@ -24,8 +24,8 @@ export default function ShippingPolicy() {
             <h2 className="text-2xl font-semibold mt-8 mb-4">Shipping Methods</h2>
             <p>We offer the following shipping methods:</p>
             <ul className="list-disc pl-6 mt-2 space-y-2">
-              <li>Standard Shipping: 5-7 business days</li>
-              <li>Express Shipping: 2-3 business days (additional charges may apply)</li>
+              <li>Standard Shipping: 5-7 business days(PAN India)</li>
+              <li>Porter Shipping: 2-3 business days (within Bangalore)</li>
             </ul>
           </section>
 
@@ -66,8 +66,8 @@ export default function ShippingPolicy() {
             <address className="not-italic mt-2">
               SHIKHA PRIYADARSHINI<br />
               Carmelram, Bangalore, India<br />
-              Email: [Your Contact Email]<br />
-              Phone: [Your Contact Number]
+              Email: contact@brownhues.in<br />
+              Phone: +91 9153976407
             </address>
           </section>
         </div>
