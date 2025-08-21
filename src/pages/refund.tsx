@@ -59,8 +59,9 @@ export default function RefundPolicy() {
             <h2 className="text-2xl font-semibold mt-8 mb-4">Refund Processing</h2>
             <p>
               For approved refunds, please allow up to 7 business days for the refund to be credited to your original payment method. The exact timing may vary depending on your bank or payment provider.
-            
+
             </p>
+            <p>For any replacement, the replacement will be shipped within 7 days and will be delivered in another 7 days.</p>
           </section>
 
           <section>
