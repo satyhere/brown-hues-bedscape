@@ -34,7 +34,7 @@ export default function RefundPolicy() {
 
               <li>Products marked as "non-returnable" on the product page</li>
               <li>Personalized or made-to-order items</li>
-              <li>Products without original packaging, tags, and accessories</li>
+              <li>Products without original packaging, and accessories</li>
             </ul>
             <p className="mt-4">
               However, refund/replacement may be considered if the quality of the product delivered is not as expected. Such requests must be reported within 3 days of receiving the product.
@@ -59,6 +59,7 @@ export default function RefundPolicy() {
             <h2 className="text-2xl font-semibold mt-8 mb-4">Refund Processing</h2>
             <p>
               For approved refunds, please allow up to 7 business days for the refund to be credited to your original payment method. The exact timing may vary depending on your bank or payment provider.
+            
             </p>
           </section>
 

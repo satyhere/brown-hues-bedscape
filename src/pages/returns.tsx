@@ -64,11 +64,13 @@ export default function ReturnPolicy() {
           <section>
             <h2 className="text-2xl font-semibold mt-8 mb-4">Exchanges</h2>
             <p>We only replace items if they are defective or damaged. If you need to exchange an item for a different size or color, please return the original item and place a new order for the desired item.</p>
+           
           </section>
 
           <section>
             <h2 className="text-2xl font-semibold mt-8 mb-4">Damaged or Defective Items</h2>
             <p>If you receive a damaged or defective item, please contact us immediately with photos of the damage. We will arrange for a replacement or refund once we receive the damaged item back.</p>
+            <p>The replacement will be shipped within 7 days and will be delivered in another 7 days.</p>
           </section>
 
           <section>
