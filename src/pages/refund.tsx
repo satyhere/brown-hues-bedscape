@@ -46,6 +46,7 @@ export default function RefundPolicy() {
             <p>
               In case of receipt of damaged or defective items, please report to our customer service team immediately. The request will be processed once our team has verified the issue. Please report any damage or defects within 3 days of receiving the product.
             </p>
+            <p>For any replacement, the replacement will be shipped within 7 days and will be delivered in another 7 days.</p>
           </section>
 
           <section>
@@ -61,7 +62,7 @@ export default function RefundPolicy() {
               For approved refunds, please allow up to 7 business days for the refund to be credited to your original payment method. The exact timing may vary depending on your bank or payment provider.
 
             </p>
-            <p>For any replacement, the replacement will be shipped within 7 days and will be delivered in another 7 days.</p>
+            
           </section>
 
           <section>
