@@ -41,6 +41,7 @@ export default function ShippingPolicy() {
             <p>
               Once your order has been shipped, you will receive a confirmation email with tracking information. You can use this information to track your package through our website or the courier's website.
             </p>
+            <p>All products will be delivered within 5-7 days</p>
           </section>
 
           <section>
